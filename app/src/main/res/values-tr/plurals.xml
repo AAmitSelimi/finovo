@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="pl_receipts">
+        <item quantity="one">%1$d makbuz</item>
+        <item quantity="other">%1$d makbuz</item>
+    </plurals>
+    <plurals name="pl_areas">
+        <item quantity="one">%1$d alan</item>
+        <item quantity="other">%1$d alan</item>
+    </plurals>
+    <plurals name="pl_goals_count">
+        <item quantity="one">%1$d hedef · %2$s birikti</item>
+        <item quantity="other">%1$d hedef · %2$s birikti</item>
+    </plurals>
+    <plurals name="pl_goals_active">
+        <item quantity="one">%1$d etkin hedef</item>
+        <item quantity="other">%1$d etkin hedef</item>
+    </plurals>
+    <plurals name="pl_subs_active">
+        <item quantity="one">%1$d etkin abonelik</item>
+        <item quantity="other">%1$d etkin abonelik</item>
+    </plurals>
+    <plurals name="pl_entries">
+        <item quantity="one">%1$d kayıt</item>
+        <item quantity="other">%1$d kayıt</item>
+    </plurals>
+    <plurals name="pl_hits">
+        <item quantity="one">%1$d sonuç</item>
+        <item quantity="other">%1$d sonuç</item>
+    </plurals>
+    <plurals name="pl_bookings_month">
+        <item quantity="one">%1$d kayıt · bu ay %2$s</item>
+        <item quantity="other">%1$d kayıt · bu ay %2$s</item>
+    </plurals>
+    <plurals name="pl_in_days">
+        <item quantity="one">%1$d gün içinde</item>
+        <item quantity="other">%1$d gün içinde</item>
+    </plurals>
+    <plurals name="pl_due_in_days">
+        <item quantity="one">%1$d gün içinde vadeli</item>
+        <item quantity="other">%1$d gün içinde vadeli</item>
+    </plurals>
+    <plurals name="pl_days_left">
+        <item quantity="one"> · %1$d gün kaldı</item>
+        <item quantity="other"> · %1$d gün kaldı</item>
+    </plurals>
+    <plurals name="pl_reminder_days">
+        <item quantity="one"> · %1$d gün önce hatırlatma</item>
+        <item quantity="other"> · %1$d gün önce hatırlatma</item>
+    </plurals>
+    <plurals name="pl_every_n_days">
+        <item quantity="one">Her %1$d günde</item>
+        <item quantity="other">Her %1$d günde</item>
+    </plurals>
+    <plurals name="pl_every_n_days_lc">
+        <item quantity="one">her %1$d günde</item>
+        <item quantity="other">her %1$d günde</item>
+    </plurals>
+    <plurals name="pl_bookings">
+        <item quantity="one">%1$d kayıt</item>
+        <item quantity="other">%1$d kayıt</item>
+    </plurals>
+    <plurals name="pl_days_ago">
+        <item quantity="one">%1$d gün önce</item>
+        <item quantity="other">%1$d gün önce</item>
+    </plurals>
+</resources>

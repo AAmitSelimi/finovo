@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="pl_receipts">
+        <item quantity="one">%1$d ricevuta</item>
+        <item quantity="other">%1$d ricevute</item>
+    </plurals>
+    <plurals name="pl_areas">
+        <item quantity="one">%1$d area</item>
+        <item quantity="other">%1$d aree</item>
+    </plurals>
+    <plurals name="pl_goals_count">
+        <item quantity="one">%1$d obiettivo · %2$s risparmiati</item>
+        <item quantity="other">%1$d obiettivi · %2$s risparmiati</item>
+    </plurals>
+    <plurals name="pl_goals_active">
+        <item quantity="one">%1$d obiettivo attivo</item>
+        <item quantity="other">%1$d obiettivi attivi</item>
+    </plurals>
+    <plurals name="pl_subs_active">
+        <item quantity="one">%1$d abbonamento attivo</item>
+        <item quantity="other">%1$d abbonamenti attivi</item>
+    </plurals>
+    <plurals name="pl_entries">
+        <item quantity="one">%1$d voce</item>
+        <item quantity="other">%1$d voci</item>
+    </plurals>
+    <plurals name="pl_hits">
+        <item quantity="one">%1$d risultato</item>
+        <item quantity="other">%1$d risultati</item>
+    </plurals>
+    <plurals name="pl_bookings_month">
+        <item quantity="one">%1$d movimento · %2$s questo mese</item>
+        <item quantity="other">%1$d movimenti · %2$s questo mese</item>
+    </plurals>
+    <plurals name="pl_in_days">
+        <item quantity="one">tra %1$d giorno</item>
+        <item quantity="other">tra %1$d giorni</item>
+    </plurals>
+    <plurals name="pl_due_in_days">
+        <item quantity="one">in scadenza tra %1$d giorno</item>
+        <item quantity="other">in scadenza tra %1$d giorni</item>
+    </plurals>
+    <plurals name="pl_days_left">
+        <item quantity="one"> · ancora %1$d giorno</item>
+        <item quantity="other"> · ancora %1$d giorni</item>
+    </plurals>
+    <plurals name="pl_reminder_days">
+        <item quantity="one"> · promemoria %1$d giorno prima</item>
+        <item quantity="other"> · promemoria %1$d giorni prima</item>
+    </plurals>
+    <plurals name="pl_every_n_days">
+        <item quantity="one">Ogni %1$d giorno</item>
+        <item quantity="other">Ogni %1$d giorni</item>
+    </plurals>
+    <plurals name="pl_every_n_days_lc">
+        <item quantity="one">ogni %1$d giorno</item>
+        <item quantity="other">ogni %1$d giorni</item>
+    </plurals>
+    <plurals name="pl_bookings">
+        <item quantity="one">%1$d movimento</item>
+        <item quantity="other">%1$d movimenti</item>
+    </plurals>
+    <plurals name="pl_days_ago">
+        <item quantity="one">%1$d giorno fa</item>
+        <item quantity="other">%1$d giorni fa</item>
+    </plurals>
+</resources>

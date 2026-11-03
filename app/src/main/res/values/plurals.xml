@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="pl_receipts">
+        <item quantity="one">%1$d Beleg</item>
+        <item quantity="other">%1$d Belege</item>
+    </plurals>
+    <plurals name="pl_areas">
+        <item quantity="one">%1$d Bereich</item>
+        <item quantity="other">%1$d Bereiche</item>
+    </plurals>
+    <plurals name="pl_goals_count">
+        <item quantity="one">%1$d Ziel · %2$s gespart</item>
+        <item quantity="other">%1$d Ziele · %2$s gespart</item>
+    </plurals>
+    <plurals name="pl_goals_active">
+        <item quantity="one">%1$d aktives Ziel</item>
+        <item quantity="other">%1$d aktive Ziele</item>
+    </plurals>
+    <plurals name="pl_subs_active">
+        <item quantity="one">%1$d aktives Abo</item>
+        <item quantity="other">%1$d aktive Abos</item>
+    </plurals>
+    <plurals name="pl_entries">
+        <item quantity="one">%1$d Eintrag</item>
+        <item quantity="other">%1$d Einträge</item>
+    </plurals>
+    <plurals name="pl_hits">
+        <item quantity="one">%1$d Treffer</item>
+        <item quantity="other">%1$d Treffer</item>
+    </plurals>
+    <plurals name="pl_bookings_month">
+        <item quantity="one">%1$d Buchung · %2$s diesen Monat</item>
+        <item quantity="other">%1$d Buchungen · %2$s diesen Monat</item>
+    </plurals>
+    <plurals name="pl_in_days">
+        <item quantity="one">in %1$d Tag</item>
+        <item quantity="other">in %1$d Tagen</item>
+    </plurals>
+    <plurals name="pl_due_in_days">
+        <item quantity="one">in %1$d Tag fällig</item>
+        <item quantity="other">in %1$d Tagen fällig</item>
+    </plurals>
+    <plurals name="pl_days_left">
+        <item quantity="one"> · noch %1$d Tag</item>
+        <item quantity="other"> · noch %1$d Tage</item>
+    </plurals>
+    <plurals name="pl_reminder_days">
+        <item quantity="one"> · Erinnerung %1$d Tag vorher</item>
+        <item quantity="other"> · Erinnerung %1$d Tage vorher</item>
+    </plurals>
+    <plurals name="pl_every_n_days">
+        <item quantity="one">Alle %1$d Tag</item>
+        <item quantity="other">Alle %1$d Tage</item>
+    </plurals>
+    <plurals name="pl_every_n_days_lc">
+        <item quantity="one">alle %1$d Tag</item>
+        <item quantity="other">alle %1$d Tage</item>
+    </plurals>
+    <plurals name="pl_bookings">
+        <item quantity="one">%1$d Buchung</item>
+        <item quantity="other">%1$d Buchungen</item>
+    </plurals>
+    <plurals name="pl_days_ago">
+        <item quantity="one">vor %1$d Tag</item>
+        <item quantity="other">vor %1$d Tagen</item>
+    </plurals>
+</resources>

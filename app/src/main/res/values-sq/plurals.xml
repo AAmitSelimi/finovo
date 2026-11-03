@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="pl_receipts">
+        <item quantity="one">%1$d dëftesë</item>
+        <item quantity="other">%1$d dëftesa</item>
+    </plurals>
+    <plurals name="pl_areas">
+        <item quantity="one">%1$d fushë</item>
+        <item quantity="other">%1$d fusha</item>
+    </plurals>
+    <plurals name="pl_goals_count">
+        <item quantity="one">%1$d qëllim · %2$s kursyer</item>
+        <item quantity="other">%1$d qëllime · %2$s kursyer</item>
+    </plurals>
+    <plurals name="pl_goals_active">
+        <item quantity="one">%1$d qëllim aktiv</item>
+        <item quantity="other">%1$d qëllime aktive</item>
+    </plurals>
+    <plurals name="pl_subs_active">
+        <item quantity="one">%1$d abonim aktiv</item>
+        <item quantity="other">%1$d abonime aktive</item>
+    </plurals>
+    <plurals name="pl_entries">
+        <item quantity="one">%1$d zë</item>
+        <item quantity="other">%1$d zëra</item>
+    </plurals>
+    <plurals name="pl_hits">
+        <item quantity="one">%1$d rezultat</item>
+        <item quantity="other">%1$d rezultate</item>
+    </plurals>
+    <plurals name="pl_bookings_month">
+        <item quantity="one">%1$d regjistrim · %2$s këtë muaj</item>
+        <item quantity="other">%1$d regjistrime · %2$s këtë muaj</item>
+    </plurals>
+    <plurals name="pl_in_days">
+        <item quantity="one">në %1$d ditë</item>
+        <item quantity="other">në %1$d ditë</item>
+    </plurals>
+    <plurals name="pl_due_in_days">
+        <item quantity="one">skadon në %1$d ditë</item>
+        <item quantity="other">skadon në %1$d ditë</item>
+    </plurals>
+    <plurals name="pl_days_left">
+        <item quantity="one"> · edhe %1$d ditë</item>
+        <item quantity="other"> · edhe %1$d ditë</item>
+    </plurals>
+    <plurals name="pl_reminder_days">
+        <item quantity="one"> · përkujtues %1$d ditë përpara</item>
+        <item quantity="other"> · përkujtues %1$d ditë përpara</item>
+    </plurals>
+    <plurals name="pl_every_n_days">
+        <item quantity="one">Çdo %1$d ditë</item>
+        <item quantity="other">Çdo %1$d ditë</item>
+    </plurals>
+    <plurals name="pl_every_n_days_lc">
+        <item quantity="one">çdo %1$d ditë</item>
+        <item quantity="other">çdo %1$d ditë</item>
+    </plurals>
+    <plurals name="pl_bookings">
+        <item quantity="one">%1$d regjistrim</item>
+        <item quantity="other">%1$d regjistrime</item>
+    </plurals>
+    <plurals name="pl_days_ago">
+        <item quantity="one">%1$d ditë më parë</item>
+        <item quantity="other">%1$d ditë më parë</item>
+    </plurals>
+</resources>

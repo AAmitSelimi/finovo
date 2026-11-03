@@ -1,0 +1,42 @@
+# ------------------------------ Android / Gradle -----------------------------
+*.iml
+.gradle/
+.kotlin/
+/local.properties
+/.idea/
+.DS_Store
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# ------------------------------ Artefakte -------------------------------------
+*.apk
+*.aab
+*.ap_
+*.idsig
+*.dex
+output-metadata.json
+app/build/
+app/release/
+
+# ------------------------------ Geheimnisse -----------------------------------
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+google-services.json
+google-services*.json
+.env
+.env.*
+*.properties.user
+**/secrets.*
+signing.properties
+keystore.properties
+
+# ------------------------------ Logs / Temp -----------------------------------
+*.log
+*.tmp
+*.swp
