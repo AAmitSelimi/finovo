@@ -42,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -937,23 +938,31 @@ private fun AvailableCard(availableCents: Long, incomeCents: Long, symbol: Strin
     val percent =
         if (incomeCents > 0L) (availableCents.toFloat() / incomeCents.toFloat()).coerceIn(0f, 1f)
         else 0f
-    val gradient = androidx.compose.ui.graphics.Brush.horizontalGradient(
+    val gradient = androidx.compose.ui.graphics.Brush.linearGradient(
         listOf(
-            MaterialTheme.colorScheme.primary,
-            androidx.compose.ui.graphics.lerp(
-                MaterialTheme.colorScheme.primary,
-                androidx.compose.ui.graphics.Color.Black,
-                0.32f
-            )
+            androidx.compose.ui.graphics.lerp(MaterialTheme.colorScheme.primary, androidx.compose.ui.graphics.Color(0xFF0B1B4D), 0.25f),
+            androidx.compose.ui.graphics.Color(0xFF0B1B4D)
         )
     )
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 6.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .clip(RoundedCornerShape(32.dp))
             .background(gradient)
-            .padding(20.dp)
+            .drawBehind {
+                drawCircle(
+                    androidx.compose.ui.graphics.Color.White.copy(alpha = 0.07f),
+                    radius = size.width * 0.45f,
+                    center = androidx.compose.ui.geometry.Offset(size.width * 0.95f, -size.height * 0.1f)
+                )
+                drawCircle(
+                    androidx.compose.ui.graphics.Color.White.copy(alpha = 0.05f),
+                    radius = size.width * 0.3f,
+                    center = androidx.compose.ui.geometry.Offset(size.width * 0.05f, size.height * 1.05f)
+                )
+            }
+            .padding(24.dp)
     ) {
         Column {
             Row(
@@ -961,16 +970,17 @@ private fun AvailableCard(availableCents: Long, incomeCents: Long, symbol: Strin
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    S("available", "Verfügbar"),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.85f)
+                    S("available", "Verfügbar").uppercase(),
+                    style = MaterialTheme.typography.labelMedium,
+                    letterSpacing = 1.4.sp,
+                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f)
                 )
                 Spacer(Modifier.weight(1f))
                 Box(
                     modifier = Modifier
                         .size(40.dp)
-                        .clip(RoundedCornerShape(13.dp))
-                        .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.18f)),
+                        .clip(CircleShape)
+                        .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.16f)),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -985,10 +995,10 @@ private fun AvailableCard(availableCents: Long, incomeCents: Long, symbol: Strin
             com.finovo.app.ui.components.AmountText(
                 cents = availableCents,
                 symbol = symbol,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.displaySmall.copy(fontSize = 38.sp, lineHeight = 44.sp),
                 color = androidx.compose.ui.graphics.Color.White
             )
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(18.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

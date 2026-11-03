@@ -117,11 +117,12 @@ fun AppCard(
     containerColor: Color = appColors().card,
     content: @Composable () -> Unit
 ) {
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(24.dp)
     val base = Modifier
         .fillMaxWidth()
         .clip(shape)
         .background(containerColor)
+        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
     val clickable = if (onClick != null) base.clickable(onClick = onClick) else base
     Box(modifier = modifier.then(clickable)) {
         content()

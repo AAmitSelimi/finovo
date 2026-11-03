@@ -82,6 +82,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
@@ -195,9 +197,17 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
                     containerColor = MaterialTheme.colorScheme.background,
                     snackbarHost = { SnackbarHost(snackbarHostState) },
                     bottomBar = {
+                        Box(
+                            modifier = androidx.compose.ui.Modifier
+                                .navigationBarsPadding()
+                                .padding(start = 14.dp, end = 14.dp, bottom = 10.dp, top = 4.dp)
+                                .shadow(10.dp, RoundedCornerShape(30.dp))
+                                .clip(RoundedCornerShape(30.dp))
+                        ) {
                         NavigationBar(
                             containerColor = MaterialTheme.colorScheme.surface,
-                            tonalElevation = 3.dp
+                            tonalElevation = 0.dp,
+                            windowInsets = WindowInsets(0, 0, 0, 0)
                         ) {
                             val selectedTab = stack.lastOrNull { tab ->
                                 tabs.any { it.route.key == tab.key }
@@ -232,6 +242,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
                                 )
                             }
                         }
+                        }
                     },
                     floatingActionButton = {
                         val showFab = when (current) {
@@ -251,7 +262,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
                                 },
                                 containerColor = MaterialTheme.colorScheme.primary,
                                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                                shape = androidx.compose.foundation.shape.RoundedCornerShape(18.dp)
+                                shape = androidx.compose.foundation.shape.CircleShape
                             ) {
                                 Icon(
                                     Icons.Default.Add,
