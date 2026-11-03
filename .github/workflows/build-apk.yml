@@ -16,7 +16,9 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
+      # The runner already has the Android SDK; only the licenses must be accepted.
+      - name: Accept Android SDK licenses
+        run: yes | "$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -1)" --licenses > /dev/null || true
 
       - name: Unit tests
         run: |
