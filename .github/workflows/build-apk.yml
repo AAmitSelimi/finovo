@@ -32,6 +32,10 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug --console=plain -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
 
+      - name: Release check (R8 + App Bundle, unsigned)
+        run: ./gradlew bundleRelease assembleRelease --console=plain -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=1g"
+        continue-on-error: true
+
       - uses: actions/upload-artifact@v4
         with:
           name: Finovo-debug-apk

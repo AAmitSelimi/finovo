@@ -48,28 +48,28 @@ import com.finovo.app.data.*
 // Colors
 // ---------------------------------------------------------------------------
 
-val Accent = Color(0xFF2563EB)
-val AccentDark = Color(0xFF7EA6FF)
-val IncomeLight = Color(0xFF16A34A)
+val Accent = Color(0xFF1B62F0)
+val AccentDark = Color(0xFF7FA8FF)
+val IncomeLight = Color(0xFF0B7A50)
 val ExpenseLight = Color(0xFFDC2626)
-val IncomeDark = Color(0xFF4ADE80)
+val IncomeDark = Color(0xFF4FD39B)
 val ExpenseDark = Color(0xFFFF7A75)
 
 private val LightColors = lightColorScheme(
     primary = Accent,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFDCE6FF),
+    primaryContainer = Color(0xFFE8EFFE),
     onPrimaryContainer = Color(0xFF0B2C6B),
     secondary = Color(0xFF475569),
     onSecondary = Color.White,
-    background = Color(0xFFF4F5F7),
-    onBackground = Color(0xFF111827),
+    background = Color(0xFFF4F6FB),
+    onBackground = Color(0xFF0E1729),
     surface = Color.White,
-    onSurface = Color(0xFF111827),
-    surfaceVariant = Color(0xFFF1F3F7),
-    onSurfaceVariant = Color(0xFF5B6472),
-    outline = Color(0xFFD8DCE4),
-    outlineVariant = Color(0xFFE8EBF0),
+    onSurface = Color(0xFF0E1729),
+    surfaceVariant = Color(0xFFEDF1F8),
+    onSurfaceVariant = Color(0xFF566175),
+    outline = Color(0xFFD3DAE6),
+    outlineVariant = Color(0xFFE3E8F1),
     error = ExpenseLight,
     onError = Color.White,
     scrim = Color(0x99000000)
@@ -77,19 +77,19 @@ private val LightColors = lightColorScheme(
 
 private val DarkColors = darkColorScheme(
     primary = AccentDark,
-    onPrimary = Color(0xFF04224F),
-    primaryContainer = Color(0xFF1B3A6B),
+    onPrimary = Color(0xFF0A0F1A),
+    primaryContainer = Color(0xFF1C2B4D),
     onPrimaryContainer = Color(0xFFD6E4FF),
     secondary = Color(0xFFB6C2D1),
     onSecondary = Color(0xFF16202B),
-    background = Color(0xFF121212),
-    onBackground = Color(0xFFEDEFF2),
-    surface = Color(0xFF1C1C1E),
-    onSurface = Color(0xFFEDEFF2),
-    surfaceVariant = Color(0xFF26282B),
-    onSurfaceVariant = Color(0xFFAEB6C2),
-    outline = Color(0xFF3A3D42),
-    outlineVariant = Color(0xFF2A2C30),
+    background = Color(0xFF0A0F1A),
+    onBackground = Color(0xFFEDF2FB),
+    surface = Color(0xFF141B2B),
+    onSurface = Color(0xFFEDF2FB),
+    surfaceVariant = Color(0xFF1B2437),
+    onSurfaceVariant = Color(0xFF9DAAC0),
+    outline = Color(0xFF34405A),
+    outlineVariant = Color(0xFF232D44),
     error = ExpenseDark,
     onError = Color(0xFF4A0B0B),
     scrim = Color(0x99000000)
@@ -113,17 +113,17 @@ data class AppColors(
 private val LightAppColors = AppColors(
     income = IncomeLight,
     expense = ExpenseLight,
-    incomeContainer = Color(0xFFE7F7ED),
+    incomeContainer = Color(0xFFE2F4EC),
     expenseContainer = Color(0xFFFDECEC),
     card = Color.White,
-    cardAlt = Color(0xFFF7F8FA),
-    divider = Color(0xFFE9ECF1),
-    textMuted = Color(0xFF6B7280),
-    warning = Color(0xFFD97706),
+    cardAlt = Color(0xFFF4F6FB),
+    divider = Color(0xFFE3E8F1),
+    textMuted = Color(0xFF566175),
+    warning = Color(0xFF9A5200),
     warningContainer = Color(0xFFFFF3E0),
     chartPalette = listOf(
-        Color(0xFF2563EB),
-        Color(0xFF16A34A),
+        Color(0xFF1B62F0),
+        Color(0xFF0B7A50),
         Color(0xFFF59E0B),
         Color(0xFF8B5CF6),
         Color(0xFF06B6D4),
@@ -136,17 +136,17 @@ private val LightAppColors = AppColors(
 private val DarkAppColors = AppColors(
     income = IncomeDark,
     expense = ExpenseDark,
-    incomeContainer = Color(0xFF17301F),
+    incomeContainer = Color(0xFF14352B),
     expenseContainer = Color(0xFF3A1D1D),
-    card = Color(0xFF1C1C1E),
-    cardAlt = Color(0xFF232529),
-    divider = Color(0xFF2C2F34),
-    textMuted = Color(0xFF9CA3AF),
-    warning = Color(0xFFFBBF24),
+    card = Color(0xFF141B2B),
+    cardAlt = Color(0xFF1B2437),
+    divider = Color(0xFF232D44),
+    textMuted = Color(0xFF9DAAC0),
+    warning = Color(0xFFF2A64A),
     warningContainer = Color(0xFF3B2E14),
     chartPalette = listOf(
-        Color(0xFF7EA6FF),
-        Color(0xFF4ADE80),
+        Color(0xFF7FA8FF),
+        Color(0xFF4FD39B),
         Color(0xFFFBBF24),
         Color(0xFFA78BFA),
         Color(0xFF22D3EE),
@@ -194,6 +194,15 @@ val Typography = Typography(
     labelMedium = TextStyle(fontSize = 12.sp, lineHeight = 16.sp)
 )
 
+/** Softer, larger corners as in the new design. */
+val FinovoShapes = Shapes(
+    extraSmall = RoundedCornerShape(8.dp),
+    small = RoundedCornerShape(12.dp),
+    medium = RoundedCornerShape(16.dp),
+    large = RoundedCornerShape(24.dp),
+    extraLarge = RoundedCornerShape(28.dp)
+)
+
 @Composable
 fun FinovoTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -211,6 +220,7 @@ fun FinovoTheme(
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,
+            shapes = FinovoShapes,
             content = content
         )
     }

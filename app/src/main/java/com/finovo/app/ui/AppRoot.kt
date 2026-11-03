@@ -177,12 +177,19 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
             if (splashVisible) {
                 SplashScreen { splashVisible = false }
             } else if (locked) {
-                LockScreen(
-                    onUnlocked = { viewModel.unlock() },
-                    onBiometric = onBiometric,
-                    biometricEnabled = settings.biometricEnabled && biometricAvailable,
-                    verify = { viewModel.checkPin(it) }
-                )
+                androidx.compose.foundation.layout.Box(
+                    modifier = androidx.compose.ui.Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .safeDrawingPadding()
+                ) {
+                    LockScreen(
+                        onUnlocked = { viewModel.unlock() },
+                        onBiometric = onBiometric,
+                        biometricEnabled = settings.biometricEnabled && biometricAvailable,
+                        verify = { viewModel.checkPin(it) }
+                    )
+                }
             } else {
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
