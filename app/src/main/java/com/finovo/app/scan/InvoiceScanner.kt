@@ -49,7 +49,9 @@ object InvoiceScanner {
         /** 0..1 - wie brauchbar die Erkennung voraussichtlich ist. */
         val quality: Float,
         /** Erkannte Drehung in Grad. */
-        val rotation: Float
+        val rotation: Float,
+        /** Inhalt eines gefundenen QR-/GiroCodes (oder null). */
+        val qr: String? = null
     )
 
     /** Temporäre Datei + Content-URI für die Kamera-App. */
@@ -93,7 +95,9 @@ object InvoiceScanner {
             }
         }
 
-        if (best.first.isBlank()) {
+        val qr = readQr(source) ?: readQr(prepared.bitmap)
+
+        if (best.first.isBlank() && qr == null) {
             throw ScanException(Reason.NO_TEXT, "Kein Text erkannt")
         }
         ScanResult(
@@ -101,8 +105,25 @@ object InvoiceScanner {
             lines = best.second,
             imagePath = enhancedPath,
             quality = bestQuality,
-            rotation = prepared.rotation
+            rotation = prepared.rotation,
+            qr = qr
         )
+    }
+
+    /** Sucht einen GiroCode (EPC) im Bild; liefert den ersten passenden Inhalt. */
+    private fun readQr(bitmap: Bitmap): String? = try {
+        val options = com.google.mlkit.vision.barcode.BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(com.google.mlkit.vision.barcode.common.Barcode.FORMAT_QR_CODE)
+            .build()
+        val scanner = com.google.mlkit.vision.barcode.BarcodeScanning.getClient(options)
+        try {
+            val codes = Tasks.await(scanner.process(InputImage.fromBitmap(bitmap, 0)), 20, TimeUnit.SECONDS)
+            codes.mapNotNull { it.rawValue }.firstOrNull { it.startsWith("BCD") }
+        } finally {
+            scanner.close()
+        }
+    } catch (e: Exception) {
+        null
     }
 
     /** Alter Weg: nur der Rohtext. Bleibt, damit nichts Altes kaputtgeht. */

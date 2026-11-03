@@ -101,6 +101,8 @@ dependencies {
 
     // On-device OCR for the invoice scanner (no cloud, no account)
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    // GiroCode / QR on invoices (exact payment data), also fully on-device
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     // --- Bank connection (PSD2 / Open Banking) -----------------------------
     // The app only ever talks to its own backend; no provider secrets and no

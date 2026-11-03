@@ -1046,7 +1046,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             scanning = true
             try {
                 val outcome = com.finovo.app.scan.InvoiceScanner.scan(context, uri)
-                val parsed = com.finovo.app.scan.InvoiceParser.parse(outcome.lines)
+                val parsed = com.finovo.app.scan.EpcQr.merge(com.finovo.app.scan.InvoiceParser.parse(outcome.lines), com.finovo.app.scan.EpcQr.parse(outcome.qr))
                 val copy = outcome.imagePath
                     ?: com.finovo.app.scan.InvoiceScanner.copyToAppFiles(context, uri)
                 scanImagePath = copy
@@ -1083,7 +1083,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             scanning = true
             try {
                 val outcome = com.finovo.app.scan.InvoiceScanner.scan(context, uri)
-                val parsed = com.finovo.app.scan.InvoiceParser.parse(outcome.lines)
+                val parsed = com.finovo.app.scan.EpcQr.merge(com.finovo.app.scan.InvoiceParser.parse(outcome.lines), com.finovo.app.scan.EpcQr.parse(outcome.qr))
                 val copy = outcome.imagePath
                     ?: com.finovo.app.scan.InvoiceScanner.copyToAppFiles(context, uri)
                 scanImagePath = copy
