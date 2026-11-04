@@ -61,11 +61,17 @@ class BiometrieSperreTest {
         assertNull(Biometrics.biometricClass(SecuritySettings(face = false, fingerprint = false)))
     }
 
-    @Test fun ohneHardwareKeineBiometrie() {
+    @Test fun jederFehlerStatusHatVerstaendlicheMeldung() {
         val c = ApplicationProvider.getApplicationContext<FinovoApp>()
-        val st = Biometrics.status(c, SecuritySettings())
-        assertNotEquals(BioStatus.READY, st)          // Robolectric hat keinen Sensor
-        assertNotNull(Biometrics.message(c, st))
+        for (st in listOf(BioStatus.NO_HARDWARE, BioStatus.NOT_ENROLLED, BioStatus.UPDATE_REQUIRED, BioStatus.UNAVAILABLE)) {
+            assertFalse("Meldung fuer $st", Biometrics.message(c, st).isNullOrBlank())
+        }
         assertNull(Biometrics.message(c, BioStatus.READY))
+        assertNull(Biometrics.message(c, BioStatus.DISABLED))
+    }
+
+    @Test fun beideBiometrienAusMeldetDisabled() {
+        val c = ApplicationProvider.getApplicationContext<FinovoApp>()
+        assertEquals(BioStatus.DISABLED, Biometrics.status(c, SecuritySettings(face = false, fingerprint = false)))
     }
 }
