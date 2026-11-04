@@ -244,23 +244,6 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
             )
         }
         item {
-            Spacer(Modifier.height(34.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    S("von_herzen_az_studio", "Von Herzen – AZ Studio"),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = appColors().textMuted,
-                    textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-                )
-            }
             Spacer(Modifier.height(28.dp))
         }
     }

@@ -414,41 +414,6 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
                 }
             }
 
-            // --------------------------- Markenkarte ---------------------------
-            item {
-                Spacer(Modifier.height(14.dp))
-                AppCard(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 18.dp, horizontal = 16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text("❤️", style = MaterialTheme.typography.titleMedium,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis)
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            S("made_sub", "Von Herzen für Menschen entwickelt."),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = appColors().textMuted,
-                            textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            S("az_studio", "AZ Studio"),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-            }
-
             item {
                 Spacer(Modifier.height(10.dp))
                 Text(
