@@ -1987,4 +1987,9 @@ Created on %1$s – offline on this device.</string>
     <string name="ab_info_body">Finovo is a private finance app for one person – no ads and no user account. Finovo is developed by AZ Studio.</string>
     <string name="ab_slogan">Your money. Your control. Your privacy.</string>
     <string name="ab_subtitle">Simple. Secure. Private.</string>
+    <string name="qa_analytics">Analytics</string>
+    <string name="ds_month_overview">Monthly overview</string>
+    <string name="ds_vs_prev">vs. last month</string>
+    <string name="ds_hide">Hide amount</string>
+    <string name="ds_show">Show amount</string>
 </resources>

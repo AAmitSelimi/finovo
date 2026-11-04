@@ -34,6 +34,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -48,28 +50,37 @@ import com.finovo.app.data.*
 // Colors
 // ---------------------------------------------------------------------------
 
-val Accent = Color(0xFF1B62F0)
-val AccentDark = Color(0xFF7FA8FF)
-val IncomeLight = Color(0xFF0B7A50)
-val ExpenseLight = Color(0xFFDC2626)
-val IncomeDark = Color(0xFF4FD39B)
-val ExpenseDark = Color(0xFFFF7A75)
+// Finovo Premium palette: navy, electric blue and cyan.
+val Accent = Color(0xFF1F5EFF)
+val AccentDark = Color(0xFF3D8BFF)
+val Cyan = Color(0xFF22D3EE)
+val Navy = Color(0xFF050B1F)
+val IncomeLight = Color(0xFF0E9F62)
+val ExpenseLight = Color(0xFFE5394B)
+val IncomeDark = Color(0xFF34E08A)
+val ExpenseDark = Color(0xFFFF5C6C)
 
 private val LightColors = lightColorScheme(
     primary = Accent,
     onPrimary = Color.White,
-    primaryContainer = Color(0xFFE8EFFE),
-    onPrimaryContainer = Color(0xFF0B2C6B),
-    secondary = Color(0xFF475569),
+    primaryContainer = Color(0xFFE3ECFF),
+    onPrimaryContainer = Color(0xFF0A2A80),
+    secondary = Color(0xFF0891B2),
     onSecondary = Color.White,
-    background = Color(0xFFF4F6FB),
-    onBackground = Color(0xFF0E1729),
+    secondaryContainer = Color(0xFFDDF6FC),
+    onSecondaryContainer = Color(0xFF053A47),
+    tertiary = Color(0xFF7C3AED),
+    background = Color(0xFFF2F5FC),
+    onBackground = Color(0xFF0A1330),
     surface = Color.White,
-    onSurface = Color(0xFF0E1729),
-    surfaceVariant = Color(0xFFEDF1F8),
-    onSurfaceVariant = Color(0xFF566175),
-    outline = Color(0xFFD3DAE6),
-    outlineVariant = Color(0xFFE3E8F1),
+    onSurface = Color(0xFF0A1330),
+    surfaceVariant = Color(0xFFEAF0FB),
+    onSurfaceVariant = Color(0xFF55617A),
+    surfaceContainer = Color.White,
+    surfaceContainerHigh = Color.White,
+    surfaceContainerLow = Color(0xFFF7F9FE),
+    outline = Color(0xFFCAD5EA),
+    outlineVariant = Color(0xFFE1E8F5),
     error = ExpenseLight,
     onError = Color.White,
     scrim = Color(0x99000000)
@@ -77,22 +88,28 @@ private val LightColors = lightColorScheme(
 
 private val DarkColors = darkColorScheme(
     primary = AccentDark,
-    onPrimary = Color(0xFF0A0F1A),
-    primaryContainer = Color(0xFF1C2B4D),
-    onPrimaryContainer = Color(0xFFD6E4FF),
-    secondary = Color(0xFFB6C2D1),
-    onSecondary = Color(0xFF16202B),
-    background = Color(0xFF0A0F1A),
-    onBackground = Color(0xFFEDF2FB),
-    surface = Color(0xFF141B2B),
-    onSurface = Color(0xFFEDF2FB),
-    surfaceVariant = Color(0xFF1B2437),
-    onSurfaceVariant = Color(0xFF9DAAC0),
-    outline = Color(0xFF34405A),
-    outlineVariant = Color(0xFF232D44),
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFF12306E),
+    onPrimaryContainer = Color(0xFFD5E4FF),
+    secondary = Cyan,
+    onSecondary = Color(0xFF00242C),
+    secondaryContainer = Color(0xFF0B3A4A),
+    onSecondaryContainer = Color(0xFFC9F6FF),
+    tertiary = Color(0xFFA78BFA),
+    background = Navy,
+    onBackground = Color(0xFFEFF4FF),
+    surface = Color(0xFF0B1531),
+    onSurface = Color(0xFFEFF4FF),
+    surfaceVariant = Color(0xFF13214A),
+    onSurfaceVariant = Color(0xFF9FB0D4),
+    surfaceContainer = Color(0xFF0D1838),
+    surfaceContainerHigh = Color(0xFF111E44),
+    surfaceContainerLow = Color(0xFF09122B),
+    outline = Color(0xFF2A3D74),
+    outlineVariant = Color(0xFF1A2A58),
     error = ExpenseDark,
-    onError = Color(0xFF4A0B0B),
-    scrim = Color(0x99000000)
+    onError = Color(0xFF3A0008),
+    scrim = Color(0xB3000000)
 )
 
 /** Extra semantic colors used across the app. */
@@ -107,62 +124,87 @@ data class AppColors(
     val textMuted: Color,
     val warning: Color,
     val warningContainer: Color,
-    val chartPalette: List<Color>
+    val chartPalette: List<Color>,
+    /** Design-System: Dark-Mode-Flag, Leuchtfarben, Kartenverlauf und Hero-Verlauf. */
+    val isDark: Boolean = false,
+    val glow: Color = Accent,
+    val cyan: Color = Cyan,
+    val cardTop: Color = card,
+    val cardBorder: Color = divider,
+    val heroStart: Color = Accent,
+    val heroEnd: Color = Navy
+)
+
+private val Palette = listOf(
+    Color(0xFF3D8BFF),
+    Color(0xFF22D3EE),
+    Color(0xFF34E08A),
+    Color(0xFFFFC53D),
+    Color(0xFFA78BFA),
+    Color(0xFFFF5C8A),
+    Color(0xFFFF8A3D),
+    Color(0xFF7C8DB5)
 )
 
 private val LightAppColors = AppColors(
     income = IncomeLight,
     expense = ExpenseLight,
-    incomeContainer = Color(0xFFE2F4EC),
-    expenseContainer = Color(0xFFFDECEC),
+    incomeContainer = Color(0xFFDDF7EA),
+    expenseContainer = Color(0xFFFDE6E9),
     card = Color.White,
-    cardAlt = Color(0xFFF4F6FB),
-    divider = Color(0xFFE3E8F1),
-    textMuted = Color(0xFF566175),
-    warning = Color(0xFF9A5200),
-    warningContainer = Color(0xFFFFF3E0),
+    cardAlt = Color(0xFFEFF4FD),
+    divider = Color(0xFFE4EAF6),
+    textMuted = Color(0xFF55617A),
+    warning = Color(0xFFB45309),
+    warningContainer = Color(0xFFFFF1DB),
     chartPalette = listOf(
-        Color(0xFF1B62F0),
-        Color(0xFF0B7A50),
+        Color(0xFF1F5EFF),
+        Color(0xFF06B6D4),
+        Color(0xFF10B981),
         Color(0xFFF59E0B),
         Color(0xFF8B5CF6),
-        Color(0xFF06B6D4),
-        Color(0xFFEF4444),
         Color(0xFFEC4899),
+        Color(0xFFF97316),
         Color(0xFF64748B)
-    )
+    ),
+    isDark = false,
+    glow = Accent,
+    cyan = Color(0xFF06B6D4),
+    cardTop = Color.White,
+    cardBorder = Color(0xFFDDE5F4),
+    heroStart = Color(0xFF2E6BFF),
+    heroEnd = Color(0xFF0A2A80)
 )
 
 private val DarkAppColors = AppColors(
     income = IncomeDark,
     expense = ExpenseDark,
-    incomeContainer = Color(0xFF14352B),
-    expenseContainer = Color(0xFF3A1D1D),
-    card = Color(0xFF141B2B),
-    cardAlt = Color(0xFF1B2437),
-    divider = Color(0xFF232D44),
-    textMuted = Color(0xFF9DAAC0),
-    warning = Color(0xFFF2A64A),
-    warningContainer = Color(0xFF3B2E14),
-    chartPalette = listOf(
-        Color(0xFF7FA8FF),
-        Color(0xFF4FD39B),
-        Color(0xFFFBBF24),
-        Color(0xFFA78BFA),
-        Color(0xFF22D3EE),
-        Color(0xFFFF7A75),
-        Color(0xFFF472B6),
-        Color(0xFF94A3B8)
-    )
+    incomeContainer = Color(0xFF0D3A2C),
+    expenseContainer = Color(0xFF3D1424),
+    card = Color(0xFF0B1636),
+    cardAlt = Color(0xFF13214A),
+    divider = Color(0xFF1A2A58),
+    textMuted = Color(0xFF9FB0D4),
+    warning = Color(0xFFFFB547),
+    warningContainer = Color(0xFF3A2A10),
+    chartPalette = Palette,
+    isDark = true,
+    glow = Color(0xFF3D8BFF),
+    cyan = Cyan,
+    cardTop = Color(0xFF12224F),
+    cardBorder = Color(0xFF2A4A9A),
+    heroStart = Color(0xFF1E63FF),
+    heroEnd = Color(0xFF071A52)
 )
 
 val LocalAppColors = staticCompositionLocalOf { LightAppColors }
 
 val Typography = Typography(
     displaySmall = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 30.sp,
-        lineHeight = 38.sp
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 32.sp,
+        lineHeight = 38.sp,
+        letterSpacing = (-0.5).sp
     ),
     headlineMedium = TextStyle(
         fontWeight = FontWeight.Bold,
@@ -170,17 +212,18 @@ val Typography = Typography(
         lineHeight = 30.sp
     ),
     headlineSmall = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp,
-        lineHeight = 26.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        letterSpacing = (-0.2).sp
     ),
     titleMedium = TextStyle(
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
         lineHeight = 22.sp
     ),
     titleSmall = TextStyle(
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp
     ),
@@ -224,6 +267,47 @@ fun FinovoTheme(
             content = content
         )
     }
+}
+
+/**
+ * Premium-Hintergrund: dunkles Navy mit dezenten blauen/cyanfarbenen
+ * Leuchtflaechen (Dark Mode) bzw. heller, leicht blaeulicher Verlauf (Light Mode).
+ */
+@Composable
+fun FinovoBackground(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val c = appColors()
+    val bg = MaterialTheme.colorScheme.background
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(bg)
+            .drawBehind {
+                if (c.isDark) {
+                    drawRect(
+                        Brush.radialGradient(
+                            listOf(Color(0xFF123A9E).copy(alpha = 0.55f), Color.Transparent),
+                            center = Offset(size.width * 0.9f, -size.height * 0.02f),
+                            radius = size.width * 1.0f
+                        )
+                    )
+                    drawRect(
+                        Brush.radialGradient(
+                            listOf(Color(0xFF0E7490).copy(alpha = 0.22f), Color.Transparent),
+                            center = Offset(0f, size.height * 0.75f),
+                            radius = size.width * 0.9f
+                        )
+                    )
+                } else {
+                    drawRect(
+                        Brush.radialGradient(
+                            listOf(Color(0xFFD6E3FF), Color.Transparent),
+                            center = Offset(size.width * 0.9f, 0f),
+                            radius = size.width * 0.9f
+                        )
+                    )
+                }
+            }
+    ) { content() }
 }
 
 /** Shortcut for the semantic colors. */

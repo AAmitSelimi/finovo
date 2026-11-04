@@ -172,9 +172,10 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
         com.finovo.app.util.ProvideLanguage(
             com.finovo.app.util.AppLocale.resolve(context)
         ) {
+        com.finovo.app.ui.theme.FinovoBackground {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = Color.Transparent
         ) {
             if (splashVisible) {
                 SplashScreen { splashVisible = false }
@@ -182,7 +183,6 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                 androidx.compose.foundation.layout.Box(
                     modifier = androidx.compose.ui.Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
                         .safeDrawingPadding()
                 ) {
                     LockScreen(
@@ -198,18 +198,34 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                 }
             } else {
                 Scaffold(
-                    containerColor = MaterialTheme.colorScheme.background,
+                    containerColor = Color.Transparent,
                     snackbarHost = { SnackbarHost(snackbarHostState) },
                     bottomBar = {
                         Box(
                             modifier = androidx.compose.ui.Modifier
                                 .navigationBarsPadding()
                                 .padding(start = 14.dp, end = 14.dp, bottom = 10.dp, top = 4.dp)
-                                .shadow(10.dp, RoundedCornerShape(30.dp))
+                                .shadow(
+                                    16.dp,
+                                    RoundedCornerShape(30.dp),
+                                    ambientColor = appColors().glow.copy(alpha = 0.35f),
+                                    spotColor = appColors().glow.copy(alpha = 0.35f)
+                                )
                                 .clip(RoundedCornerShape(30.dp))
+                                .border(
+                                    1.dp,
+                                    androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                        listOf(
+                                            appColors().cardBorder.copy(alpha = 0.7f),
+                                            appColors().cyan.copy(alpha = if (appColors().isDark) 0.35f else 0.15f),
+                                            appColors().cardBorder.copy(alpha = 0.7f)
+                                        )
+                                    ),
+                                    RoundedCornerShape(30.dp)
+                                )
                         ) {
                         NavigationBar(
-                            containerColor = MaterialTheme.colorScheme.surface,
+                            containerColor = if (appColors().isDark) Color(0xF00A1533) else Color.White,
                             tonalElevation = 0.dp,
                             windowInsets = WindowInsets(0, 0, 0, 0)
                         ) {
@@ -239,7 +255,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                                     colors = NavigationBarItemDefaults.colors(
                                         selectedIconColor = MaterialTheme.colorScheme.primary,
                                         selectedTextColor = MaterialTheme.colorScheme.primary,
-                                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = if (appColors().isDark) 0.18f else 0.10f),
                                         unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -255,6 +271,20 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                         }
                         if (showFab) {
                             FloatingActionButton(
+                                modifier = Modifier
+                                    .shadow(
+                                        18.dp,
+                                        androidx.compose.foundation.shape.CircleShape,
+                                        ambientColor = appColors().glow,
+                                        spotColor = appColors().glow
+                                    )
+                                    .border(
+                                        1.5.dp,
+                                        appColors().cyan.copy(alpha = 0.55f),
+                                        androidx.compose.foundation.shape.CircleShape
+                                    )
+                                    .background(primaryGradient(), androidx.compose.foundation.shape.CircleShape),
+                                elevation = FloatingActionButtonDefaults.elevation(0.dp, 0.dp, 0.dp, 0.dp),
                                 onClick = {
                                     when (current) {
                                         is Route.Home -> viewModel.openQuickAdd()
@@ -264,8 +294,8 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                                         else -> viewModel.openQuickAdd()
                                     }
                                 },
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                                containerColor = Color.Transparent,
+                                contentColor = Color.White,
                                 shape = androidx.compose.foundation.shape.CircleShape
                             ) {
                                 Icon(
@@ -348,6 +378,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                     SheetKind.NONE -> Unit
                 }
             }
+        }
         }
     }
 }

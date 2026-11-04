@@ -95,6 +95,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.text.KeyboardOptions
 import com.finovo.app.ui.components.*
 import com.finovo.app.util.*
@@ -117,16 +118,42 @@ fun AppCard(
     containerColor: Color = appColors().card,
     content: @Composable () -> Unit
 ) {
-    val shape = RoundedCornerShape(24.dp)
+    val c = appColors()
+    val shape = RoundedCornerShape(22.dp)
+    // Premium-Karte: dezenter Verlauf, leuchtender Rand (Dark) bzw. weicher Schatten (Light).
+    val fill: Brush = if (containerColor == c.card) {
+        Brush.verticalGradient(listOf(c.cardTop, c.card))
+    } else Brush.verticalGradient(listOf(containerColor, containerColor))
+    val border: Brush = if (c.isDark) {
+        Brush.linearGradient(
+            listOf(c.cardBorder.copy(alpha = 0.85f), c.cardBorder.copy(alpha = 0.18f), c.cyan.copy(alpha = 0.25f))
+        )
+    } else Brush.linearGradient(listOf(c.cardBorder, c.cardBorder))
     val base = Modifier
         .fillMaxWidth()
+        .shadow(
+            elevation = if (c.isDark) 0.dp else 6.dp,
+            shape = shape,
+            ambientColor = c.glow.copy(alpha = 0.10f),
+            spotColor = c.glow.copy(alpha = 0.12f)
+        )
         .clip(shape)
-        .background(containerColor)
-        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
+        .background(fill)
+        .border(1.dp, border, shape)
     val clickable = if (onClick != null) base.clickable(onClick = onClick) else base
     Box(modifier = modifier.then(clickable)) {
         content()
     }
+}
+
+/** Leuchtender Verlauf fuer Hauptaktionen (elektrisches Blau). */
+@Composable
+fun primaryGradient(): Brush {
+    val c = appColors()
+    return Brush.horizontalGradient(
+        if (c.isDark) listOf(Color(0xFF2F7BFF), Color(0xFF1E55F0))
+        else listOf(Color(0xFF2E6BFF), Color(0xFF1F4FE0))
+    )
 }
 
 @Composable
@@ -243,11 +270,26 @@ fun PrimaryButton(
     enabled: Boolean = true,
     icon: ImageVector? = null
 ) {
+    val shape = RoundedCornerShape(16.dp)
+    val glow = appColors().glow
     Button(
         onClick = onClick,
-        modifier = modifier.height(52.dp),
+        modifier = modifier
+            .height(54.dp)
+            .shadow(if (enabled) 14.dp else 0.dp, shape, ambientColor = glow, spotColor = glow)
+            .clip(shape)
+            .background(
+                if (enabled) primaryGradient()
+                else Brush.horizontalGradient(listOf(appColors().cardAlt, appColors().cardAlt))
+            ),
         enabled = enabled,
-        shape = RoundedCornerShape(14.dp),
+        shape = shape,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color.White,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = appColors().textMuted
+        ),
         contentPadding = PaddingValues(horizontal = 20.dp)
     ) {
         if (icon != null) {
@@ -269,9 +311,17 @@ fun SecondaryButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier.height(52.dp),
+        modifier = modifier.height(54.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(14.dp)
+        shape = RoundedCornerShape(16.dp),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            if (appColors().isDark) appColors().cardBorder else MaterialTheme.colorScheme.outline
+        ),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = if (appColors().isDark) appColors().card.copy(alpha = 0.6f) else Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        )
     ) {
         Text(text, style = MaterialTheme.typography.labelLarge,
         maxLines = 1,
@@ -315,8 +365,11 @@ fun AppTextField(
             textStyle = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = appColors().card,
+                unfocusedContainerColor = appColors().card,
+                disabledContainerColor = appColors().card,
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                unfocusedBorderColor = if (appColors().isDark) appColors().cardBorder.copy(alpha = 0.6f) else MaterialTheme.colorScheme.outline
             )
         )
         AnimatedVisibility(visible = error != null, enter = fadeIn(), exit = fadeOut()) {
@@ -405,6 +458,9 @@ fun DateField(
             .fillMaxWidth()
             .clickable { showPicker = true },
         colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = appColors().card,
+                unfocusedContainerColor = appColors().card,
+                disabledContainerColor = appColors().card,
             disabledTextColor = MaterialTheme.colorScheme.onSurface,
             disabledBorderColor = MaterialTheme.colorScheme.outline,
             disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -476,6 +532,9 @@ fun TimeField(
             .clickable { showPicker = true },
         enabled = false,
         colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = appColors().card,
+                unfocusedContainerColor = appColors().card,
+                disabledContainerColor = appColors().card,
             disabledTextColor = MaterialTheme.colorScheme.onSurface,
             disabledBorderColor = MaterialTheme.colorScheme.outline,
             disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -554,6 +613,9 @@ fun <T> DropdownField(
                 .clickable { expanded = true },
             enabled = false,
             colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = appColors().card,
+                unfocusedContainerColor = appColors().card,
+                disabledContainerColor = appColors().card,
                 disabledTextColor = MaterialTheme.colorScheme.onSurface,
                 disabledBorderColor = MaterialTheme.colorScheme.outline,
                 disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -601,10 +663,18 @@ fun ChipRow(
                 label = { Text(items[index],
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis) },
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(50),
                 colors = FilterChipDefaults.filterChipColors(
+                    containerColor = appColors().card,
+                    labelColor = appColors().textMuted,
                     selectedContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                    selectedLabelColor = Color.White
+                ),
+                border = FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = index == selectedIndex,
+                    borderColor = appColors().cardBorder.copy(alpha = if (appColors().isDark) 0.6f else 1f),
+                    selectedBorderColor = Color.Transparent
                 )
             )
         }
@@ -1006,6 +1076,7 @@ fun ScreenTopBar(
             Text(
                 title,
                 style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

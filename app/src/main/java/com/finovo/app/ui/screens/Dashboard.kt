@@ -23,6 +23,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Tune
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.ReceiptLong
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.draw.shadow
+import com.finovo.app.data.CategoryTotal
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.TrendingDown
@@ -183,27 +193,38 @@ fun DashboardScreen(
         item {
             Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    com.finovo.app.ui.components.FinovoWordmark(fontSize = 17.sp)
+                    androidx.compose.foundation.Image(
+                        painter = androidx.compose.ui.res.painterResource(com.finovo.app.R.drawable.finovo_logo),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    com.finovo.app.ui.components.FinovoWordmark(fontSize = 22.sp)
                     Spacer(Modifier.weight(1f))
                     IconButton(onClick = { viewModel.navigate(com.finovo.app.ui.Route.WidgetsEdit) }) {
                         Icon(
-                            Icons.Default.Edit,
+                            Icons.Default.Tune,
                             contentDescription = S("widgets_title", "Übersicht anpassen"),
-                            tint = appColors().textMuted
+                            tint = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(14.dp))
                 Text(
                     S(greetingKey(LocalTime.now().hour), greetingFor(LocalTime.now().hour)),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = appColors().textMuted
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     S("dashboard_title", "Deine Finanzen"),
-                    style = MaterialTheme.typography.headlineSmall,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = appColors().textMuted,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -257,8 +278,46 @@ fun DashboardScreen(
             AvailableCard(
                 availableCents = availableCents,
                 incomeCents = incomeCents,
-                symbol = symbol
+                symbol = symbol,
+                previousCents = prevIncome - prevExpense,
+                trend = monthBars.map { it.second - it.third }
             )
+        }
+
+        // ---------------------------- Schnellaktionen -----------------------------
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                QuickAction(
+                    icon = Icons.Default.ArrowDownward,
+                    label = S("kind_expense", "Ausgabe"),
+                    tint = appColors().expense,
+                    modifier = Modifier.weight(1f)
+                ) { viewModel.openExpenseSheet(null) }
+                QuickAction(
+                    icon = Icons.Default.ArrowUpward,
+                    label = S("kind_income", "Einnahme"),
+                    tint = appColors().income,
+                    modifier = Modifier.weight(1f)
+                ) { viewModel.openIncomeSheet(null) }
+                QuickAction(
+                    icon = Icons.Default.ReceiptLong,
+                    label = S("kind_bill", "Rechnung"),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.weight(1f)
+                ) { viewModel.openBillSheet(null) }
+                QuickAction(
+                    icon = Icons.Default.BarChart,
+                    label = S("qa_analytics", "Analysen"),
+                    tint = appColors().cyan,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenAnalytics
+                )
+            }
         }
 
         // --------------------------- drei kompakte Karten ----------------------
@@ -303,6 +362,24 @@ fun DashboardScreen(
         if (com.finovo.app.util.Widgets.Art.CHART in widgets) when (view) {
             DashboardView.CATEGORIES -> {
                 if (categoryTotals.isNotEmpty()) {
+                    item {
+                        val donut = categoryTotals.take(6).map { (cat, cents) ->
+                            CategoryTotal(
+                                categoryId = cat.id,
+                                name = categoryLabel(cat.name),
+                                emoji = cat.emoji,
+                                cents = cents,
+                                percent = if (expenseCents > 0L) cents.toFloat() / expenseCents.toFloat() else 0f
+                            )
+                        }
+                        MonthOverviewCard(
+                            title = S("ds_month_overview", "Monatsübersicht"),
+                            subtitle = Dates.monthYear(month.atDay(1)),
+                            totals = donut,
+                            centerLabel = S("expenses", "Ausgaben"),
+                            centerValue = Money.format(expenseCents, symbol)
+                        )
+                    }
                     item { SectionHeader(title = S("categories", "Kategorien")) }
                     items(categoryTotals.take(6)) { (cat, cents) ->
                         ShareRow(
@@ -683,8 +760,9 @@ private fun <T> SegmentedControl(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .background(appColors().cardAlt)
+            .clip(RoundedCornerShape(50))
+            .background(appColors().card)
+            .border(1.dp, appColors().cardBorder.copy(alpha = if (appColors().isDark) 0.6f else 1f), RoundedCornerShape(50))
             .padding(4.dp)
     ) {
         options.forEach { option ->
@@ -692,8 +770,11 @@ private fun <T> SegmentedControl(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(11.dp))
-                    .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        if (isSelected) com.finovo.app.ui.components.primaryGradient()
+                        else androidx.compose.ui.graphics.SolidColor(Color.Transparent)
+                    )
                     .clickable { onSelect(option) }
                     .padding(vertical = 9.dp),
                 contentAlignment = Alignment.Center
@@ -701,7 +782,7 @@ private fun <T> SegmentedControl(
                 Text(
                     label(option),
                     style = MaterialTheme.typography.labelLarge,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimary else appColors().textMuted,
+                    color = if (isSelected) Color.White else appColors().textMuted,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -934,35 +1015,90 @@ private fun SavingsRing(percent: Float) {
 
 
 @Composable
-private fun AvailableCard(availableCents: Long, incomeCents: Long, symbol: String) {
+private fun AvailableCard(
+    availableCents: Long,
+    incomeCents: Long,
+    symbol: String,
+    previousCents: Long = 0L,
+    trend: List<Long> = emptyList()
+) {
+    val c = appColors()
     val percent =
         if (incomeCents > 0L) (availableCents.toFloat() / incomeCents.toFloat()).coerceIn(0f, 1f)
         else 0f
+    var hidden by rememberSaveable { mutableStateOf(false) }
+    val shape = RoundedCornerShape(28.dp)
     val gradient = androidx.compose.ui.graphics.Brush.linearGradient(
-        listOf(
-            androidx.compose.ui.graphics.lerp(MaterialTheme.colorScheme.primary, androidx.compose.ui.graphics.Color(0xFF0B1B4D), 0.25f),
-            androidx.compose.ui.graphics.Color(0xFF0B1B4D)
-        )
+        listOf(c.heroStart, c.heroEnd),
+        start = androidx.compose.ui.geometry.Offset(0f, 0f),
+        end = androidx.compose.ui.geometry.Offset(900f, 700f)
     )
+    val white = androidx.compose.ui.graphics.Color.White
+    val sparkColor = if (c.isDark) c.income else androidx.compose.ui.graphics.Color(0xFF7CF5C0)
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(32.dp))
+            .shadow(22.dp, shape, ambientColor = c.glow, spotColor = c.glow)
+            .clip(shape)
             .background(gradient)
+            .border(
+                1.dp,
+                androidx.compose.ui.graphics.Brush.linearGradient(
+                    listOf(white.copy(alpha = 0.35f), c.cyan.copy(alpha = 0.25f), white.copy(alpha = 0.05f))
+                ),
+                shape
+            )
             .drawBehind {
                 drawCircle(
-                    androidx.compose.ui.graphics.Color.White.copy(alpha = 0.07f),
-                    radius = size.width * 0.45f,
-                    center = androidx.compose.ui.geometry.Offset(size.width * 0.95f, -size.height * 0.1f)
+                    c.cyan.copy(alpha = 0.18f),
+                    radius = size.width * 0.5f,
+                    center = androidx.compose.ui.geometry.Offset(size.width * 1.0f, -size.height * 0.15f)
                 )
                 drawCircle(
-                    androidx.compose.ui.graphics.Color.White.copy(alpha = 0.05f),
-                    radius = size.width * 0.3f,
-                    center = androidx.compose.ui.geometry.Offset(size.width * 0.05f, size.height * 1.05f)
+                    white.copy(alpha = 0.05f),
+                    radius = size.width * 0.32f,
+                    center = androidx.compose.ui.geometry.Offset(size.width * 0.02f, size.height * 1.05f)
                 )
+                // Verlauf der letzten Monate (echte Werte) als leuchtende Linie
+                if (trend.size >= 2) {
+                    val min = trend.minOrNull() ?: 0L
+                    val max = trend.maxOrNull() ?: 0L
+                    val span = (max - min).coerceAtLeast(1L).toFloat()
+                    val left = size.width * 0.48f
+                    val right = size.width - 20.dp.toPx()
+                    val top = size.height * 0.30f
+                    val bottom = size.height * 0.62f
+                    val path = androidx.compose.ui.graphics.Path()
+                    val fillPath = androidx.compose.ui.graphics.Path()
+                    trend.forEachIndexed { i, v ->
+                        val x = left + (right - left) * i / (trend.size - 1)
+                        val y = bottom - (bottom - top) * ((v - min).toFloat() / span)
+                        if (i == 0) { path.moveTo(x, y); fillPath.moveTo(x, bottom); fillPath.lineTo(x, y) }
+                        else { path.lineTo(x, y); fillPath.lineTo(x, y) }
+                    }
+                    fillPath.lineTo(right, bottom)
+                    fillPath.close()
+                    drawPath(
+                        fillPath,
+                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                            listOf(sparkColor.copy(alpha = 0.30f), androidx.compose.ui.graphics.Color.Transparent),
+                            startY = top, endY = bottom
+                        )
+                    )
+                    drawPath(
+                        path,
+                        sparkColor.copy(alpha = 0.35f),
+                        style = Stroke(width = 7.dp.toPx(), cap = StrokeCap.Round)
+                    )
+                    drawPath(
+                        path,
+                        sparkColor,
+                        style = Stroke(width = 2.5.dp.toPx(), cap = StrokeCap.Round)
+                    )
+                }
             }
-            .padding(24.dp)
+            .padding(22.dp)
     ) {
         Column {
             Row(
@@ -970,56 +1106,169 @@ private fun AvailableCard(availableCents: Long, incomeCents: Long, symbol: Strin
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    S("available", "Verfügbar").uppercase(),
-                    style = MaterialTheme.typography.labelMedium,
-                    letterSpacing = 1.4.sp,
-                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f)
+                    S("available", "Verfügbar"),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = white.copy(alpha = 0.9f)
                 )
                 Spacer(Modifier.weight(1f))
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.16f)),
-                    contentAlignment = Alignment.Center
-                ) {
+                IconButton(onClick = { hidden = !hidden }, modifier = Modifier.size(36.dp)) {
                     Icon(
-                        Icons.Default.Savings,
-                        contentDescription = null,
-                        tint = androidx.compose.ui.graphics.Color.White,
+                        if (hidden) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                        contentDescription = if (hidden) S("ds_show", "Betrag anzeigen") else S("ds_hide", "Betrag verbergen"),
+                        tint = white,
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
-            Spacer(Modifier.height(8.dp))
-            com.finovo.app.ui.components.AmountText(
-                cents = availableCents,
-                symbol = symbol,
-                style = MaterialTheme.typography.displaySmall.copy(fontSize = 38.sp, lineHeight = 44.sp),
-                color = androidx.compose.ui.graphics.Color.White
-            )
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(4.dp))
+            if (hidden) {
+                Text(
+                    "••••••",
+                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 36.sp, lineHeight = 44.sp),
+                    color = white
+                )
+            } else {
+                com.finovo.app.ui.components.AmountText(
+                    cents = availableCents,
+                    symbol = symbol,
+                    style = MaterialTheme.typography.displaySmall.copy(fontSize = 36.sp, lineHeight = 44.sp),
+                    color = white
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            val diff = availableCents - previousCents
+            if (previousCents != 0L && !hidden) {
+                val pct = ((diff * 100L) / kotlin.math.abs(previousCents)).toInt()
+                Text(
+                    (if (diff >= 0) "+" else "−") + Money.format(kotlin.math.abs(diff), symbol) +
+                        "  (" + (if (pct >= 0) "+" else "") + pct + " %)",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (diff >= 0) sparkColor else androidx.compose.ui.graphics.Color(0xFFFFA4AE)
+                )
+                Text(
+                    S("ds_vs_prev", "zum Vormonat"),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = white.copy(alpha = 0.75f)
+                )
+            }
+            Spacer(Modifier.height(16.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.25f))
+                    .background(white.copy(alpha = 0.18f))
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(percent.coerceAtLeast(0.02f))
                         .height(8.dp)
                         .clip(RoundedCornerShape(4.dp))
-                        .background(androidx.compose.ui.graphics.Color.White)
+                        .background(
+                            androidx.compose.ui.graphics.Brush.horizontalGradient(listOf(c.cyan, white))
+                        )
                 )
             }
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 S("percent_available", "${(percent * 100).toInt()} % der Einnahmen verfügbar", (percent * 100).toInt()),
                 style = MaterialTheme.typography.bodySmall,
-                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.9f)
+                color = white.copy(alpha = 0.9f)
             )
+        }
+    }
+}
+
+/** Schnellaktion mit leuchtendem Icon - ruft nur bestehende Aktionen auf. */
+@Composable
+private fun QuickAction(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    tint: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    AppCard(modifier = modifier, onClick = onClick) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(tint.copy(alpha = 0.16f))
+                    .border(1.dp, tint.copy(alpha = 0.45f), RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
+            }
+            Spacer(Modifier.height(6.dp))
+            Text(
+                label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+/** Monatsuebersicht: Ring-Diagramm mit Legende (Werte aus den echten Buchungen). */
+@Composable
+private fun MonthOverviewCard(
+    title: String,
+    subtitle: String,
+    totals: List<CategoryTotal>,
+    centerLabel: String,
+    centerValue: String
+) {
+    val palette = appColors().chartPalette
+    AppCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+        Column(Modifier.padding(16.dp)) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = appColors().textMuted)
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                com.finovo.app.ui.components.DonutChart(
+                    totals = totals,
+                    centerLabel = centerLabel,
+                    centerValue = centerValue,
+                    modifier = Modifier.weight(1.1f)
+                )
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    totals.forEachIndexed { i, t ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 3.dp)
+                        ) {
+                            Box(
+                                Modifier
+                                    .size(9.dp)
+                                    .clip(CircleShape)
+                                    .background(palette[i % palette.size])
+                            )
+                            Spacer(Modifier.width(7.dp))
+                            Text(
+                                t.name,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.weight(1f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                "${(t.percent * 100).toInt()} %",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = appColors().textMuted
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -1987,4 +1987,9 @@ Krijuar më %1$s – offline në pajisje.</string>
     <string name="ab_info_body">Finovo është një aplikacion privat financiar për një person – pa reklama dhe pa llogari përdoruesi. Finovo zhvillohet nga AZ Studio.</string>
     <string name="ab_slogan">Paratë e tua. Kontrolli yt. Privatësia jote.</string>
     <string name="ab_subtitle">Thjesht. Sigurt. Privat.</string>
+    <string name="qa_analytics">Analizat</string>
+    <string name="ds_month_overview">Përmbledhja mujore</string>
+    <string name="ds_vs_prev">krahasuar me muajin e kaluar</string>
+    <string name="ds_hide">Fshih shumën</string>
+    <string name="ds_show">Shfaq shumën</string>
 </resources>

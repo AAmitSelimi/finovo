@@ -1986,4 +1986,9 @@
     <string name="ab_info_body">Finovo tek bir kişi için özel bir finans uygulamasıdır – reklamsız ve kullanıcı hesabı olmadan. Finovo, AZ Studio tarafından geliştirilmektedir.</string>
     <string name="ab_slogan">Paran. Kontrolün. Gizliliğin.</string>
     <string name="ab_subtitle">Basit. Güvenli. Özel.</string>
+    <string name="qa_analytics">Analizler</string>
+    <string name="ds_month_overview">Aylık genel bakış</string>
+    <string name="ds_vs_prev">geçen aya göre</string>
+    <string name="ds_hide">Tutarı gizle</string>
+    <string name="ds_show">Tutarı göster</string>
 </resources>
