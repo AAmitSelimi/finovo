@@ -39,6 +39,7 @@ import com.finovo.app.util.Stats
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -479,6 +480,15 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
 
     fun hasAppPin(): Boolean = settings.value.pinHash.isNotBlank()
 
+    init {
+        // Beim Kaltstart ist 'settings' kurz noch der Standardwert (Sperre aus). Sobald die echten
+        // Einstellungen aus der Datenbank da sind, die Sperre einmal richtig auswerten.
+        viewModelScope.launch {
+            runCatching { repository.settings.first() }
+            if (unlockedAtMs == 0L) evaluateLock(coldStart = true)
+        }
+    }
+
     fun evaluateLock(coldStart: Boolean = false) {
         val s = settings.value
         _biometricAvailable.value = s.biometricEnabled
@@ -497,6 +507,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     /** Beim Zurückkehren in die App: nach Ablauf der Zeit sperren. */
     fun lockIfTimedOut() {
         if (!lockActive() || _locked.value) return
+        // Direkt nach dem Entsperren nie wieder sperren (System-Dialoge lösen oft ein zusätzliches onResume aus).
+        if (System.currentTimeMillis() - unlockedAtMs < 3000L) return
+        // Ohne vorheriges "in den Hintergrund" gibt es nichts abzulaufen.
+        if (com.finovo.app.security.SecurityPrefs.lastBackground(getApplication()) <= 0L) return
         if (com.finovo.app.security.LockPolicy.shouldLock(
                 coldStart = false,
                 alwaysUnlock = _security.value.alwaysUnlock,
@@ -511,7 +525,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         if (lockActive()) _locked.value = true
     }
 
+    private var unlockedAtMs = 0L
+
     fun unlock() {
+        unlockedAtMs = System.currentTimeMillis()
         _locked.value = false
         _lockInfo.value = null
         com.finovo.app.security.SecurityPrefs.setLastBackground(getApplication(), 0L)

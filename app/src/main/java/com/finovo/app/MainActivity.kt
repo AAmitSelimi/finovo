@@ -111,9 +111,10 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.refreshToday()
-        viewModel.evaluateLock(coldStart = firstResume)
-        if (!firstResume) viewModel.lockIfTimedOut()
+        val wasCold = firstResume
         firstResume = false
+        viewModel.evaluateLock(coldStart = wasCold)
+        if (!wasCold) viewModel.lockIfTimedOut()
         if (viewModel.locked.value) startAutoUnlock()
     }
 
