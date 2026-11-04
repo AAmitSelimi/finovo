@@ -172,6 +172,7 @@ private fun AnalyticsContent(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "analytics",
             title = S("analysis_title", "Finanzanalyse"),
             subtitle = result.label,
             onBack = onBack,
@@ -1702,6 +1703,7 @@ private fun AnalysisCrashScreen(onRetry: () -> Unit, onBack: () -> Unit) {
     val log = remember { CrashGuard.readLog(context) }
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "analytics",
             title = S("analysis_title", "Finanzanalyse"),
             subtitle = "",
             onBack = onBack

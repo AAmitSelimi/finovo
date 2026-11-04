@@ -93,6 +93,7 @@ fun BankScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "bank",
             title = S("bankkonto", "Bankkonto"),
             subtitle = S("psd2_open_banking_verschluesselt", "PSD2 · Open Banking · verschlüsselt"),
             onBack = onBack

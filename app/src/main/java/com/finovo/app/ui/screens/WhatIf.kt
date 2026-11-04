@@ -81,6 +81,7 @@ fun WhatIfScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "whatif",
                 title = S("whatif", "Was-wäre-wenn"),
                 subtitle = S("finanzielle_situationen_simulieren", "Finanzielle Situationen simulieren"),
                 onBack = onBack

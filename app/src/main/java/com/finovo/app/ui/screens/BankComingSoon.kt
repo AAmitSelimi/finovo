@@ -46,6 +46,7 @@ import androidx.compose.ui.text.style.TextOverflow
 fun BankComingSoonScreen(onBack: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "bank",
             title = S("bank_connect", "Bankkonto verbinden"),
             subtitle = S("open_banking_psd2", "Open Banking · PSD2"),
             onBack = onBack

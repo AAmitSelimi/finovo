@@ -94,7 +94,7 @@ fun ReceiptsScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         contentPadding = PaddingValues(bottom = 110.dp)
     ) {
         item {
-            ScreenTopBar(title = S("receipts", "Belege"), subtitle = S("receipts_sub", "Fotos zu deinen Buchungen"), onBack = onBack)
+            ScreenTopBar( tutorialId = "receipts", title = S("receipts", "Belege"), subtitle = S("receipts_sub", "Fotos zu deinen Buchungen"), onBack = onBack)
         }
 
         item {

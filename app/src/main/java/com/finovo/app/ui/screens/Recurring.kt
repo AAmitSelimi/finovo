@@ -102,6 +102,7 @@ fun RecurringScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "recurring",
             title = S("wiederkehrende_zahlungen_2", "Wiederkehrende Zahlungen"),
             subtitle = S("automatisch_berechnet_doppelte_buchung", "Automatisch berechnet, doppelte Buchungen ausgeschlossen"),
             onBack = onBack

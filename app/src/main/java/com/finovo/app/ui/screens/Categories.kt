@@ -116,7 +116,7 @@ fun CategoriesScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ScreenTopBar(title = S("kategorien", "Kategorien"), subtitle = S("eigene_kategorien_verwalten", "Eigene Kategorien verwalten"), onBack = onBack)
+        ScreenTopBar( tutorialId = "categories", title = S("kategorien", "Kategorien"), subtitle = S("eigene_kategorien_verwalten", "Eigene Kategorien verwalten"), onBack = onBack)
 
         Row(
             modifier = Modifier

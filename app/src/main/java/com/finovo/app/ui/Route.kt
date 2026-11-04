@@ -68,6 +68,7 @@ sealed class Route(val key: String) {
     data object Household : Route("household")
     data object Alarms : Route("alarms")
     data object WidgetsEdit : Route("widgetsedit")
+    data object Tutorials : Route("tutorials")
 
     companion object {
         val tabs = listOf(Home, Expenses, Income, Bills, More)

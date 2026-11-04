@@ -119,7 +119,7 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item {
-            ScreenTopBar(title = S("about_finovo", "Über Finovo"), onBack = onBack)
+            ScreenTopBar( tutorialId = "about", title = S("about_finovo", "Über Finovo"), onBack = onBack)
         }
 
         // ------------------------------------------------------------ Hero

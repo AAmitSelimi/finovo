@@ -130,6 +130,7 @@ fun IncomeScreen(viewModel: AppViewModel, onBack: () -> Unit = {}) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "income",
             title = S("income_title", "Einnahmen"),
             onBack = onBack,
             actions = {

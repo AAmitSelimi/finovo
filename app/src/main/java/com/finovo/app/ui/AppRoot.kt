@@ -200,6 +200,24 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                     )
                 }
             } else {
+                // Bruecke fuer die Anleitungen: nur bestehende Navigation und Aktionen
+                val tutorialHost = remember(viewModel) {
+                    com.finovo.app.tutorial.TutorialHost(
+                        current = { viewModel.stack.value.lastOrNull() ?: Route.Home },
+                        navigate = { r -> if (Route.isTab(r)) viewModel.selectTab(r) else viewModel.navigate(r) },
+                        perform = { a ->
+                            when (a) {
+                                com.finovo.app.tutorial.TutorialAction.QUICK_ADD -> viewModel.openQuickAdd()
+                                com.finovo.app.tutorial.TutorialAction.ADD_EXPENSE -> viewModel.openExpenseSheet(null)
+                                com.finovo.app.tutorial.TutorialAction.ADD_INCOME -> viewModel.openIncomeSheet(null)
+                                com.finovo.app.tutorial.TutorialAction.ADD_BILL -> viewModel.openBillSheet(null)
+                                com.finovo.app.tutorial.TutorialAction.ADD_RECURRING -> viewModel.openRecurringSheet(null)
+                                com.finovo.app.tutorial.TutorialAction.NONE -> Unit
+                            }
+                        }
+                    )
+                }
+                CompositionLocalProvider(com.finovo.app.tutorial.LocalTutorialHost provides tutorialHost) {
                 Scaffold(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.onBackground,
@@ -359,6 +377,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                                 onNavigate = { viewModel.navigate(it) }
                             )
                             is Route.About -> AboutScreen(viewModel) { viewModel.back() }
+                            is Route.Tutorials -> com.finovo.app.tutorial.TutorialsScreen { viewModel.back() }
                             is Route.ScanReview -> ScanReviewScreen(viewModel) { viewModel.back() }
                             is Route.ReceiptScan -> BelegScanScreen(viewModel) { viewModel.back() }
                             is Route.Bank ->
@@ -380,6 +399,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
                     SheetKind.BILL -> BillSheet(viewModel, sheet.bill) { viewModel.closeSheet() }
                     SheetKind.RECURRING -> RecurringSheet(viewModel, sheet.rule) { viewModel.closeSheet() }
                     SheetKind.NONE -> Unit
+                }
                 }
             }
         }

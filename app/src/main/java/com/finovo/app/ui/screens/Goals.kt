@@ -96,6 +96,7 @@ fun GoalsScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "goals",
                 title = S("goals", "Sparziele"),
                 subtitle = if (summary.count == 0) null else plurals("pl_goals_active", summary.count, "%1\$d aktives Ziel", "%1\$d aktive Ziele"),
                 onBack = onBack

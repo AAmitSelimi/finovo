@@ -93,7 +93,7 @@ fun BudgetScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item {
-            ScreenTopBar(title = S("budget_2", "Budget"), subtitle = S("monatliches_limit", "Monatliches Limit"), onBack = onBack)
+            ScreenTopBar( tutorialId = "budget", title = S("budget_2", "Budget"), subtitle = S("monatliches_limit", "Monatliches Limit"), onBack = onBack)
         }
 
         item {

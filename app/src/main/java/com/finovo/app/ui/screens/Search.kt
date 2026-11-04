@@ -75,7 +75,7 @@ fun SearchScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         contentPadding = PaddingValues(bottom = 110.dp)
     ) {
         item {
-            ScreenTopBar(title = S("search", "Suche"), subtitle = S("search_sub", "Alles durchsuchen"), onBack = onBack)
+            ScreenTopBar( tutorialId = "search", title = S("search", "Suche"), subtitle = S("search_sub", "Alles durchsuchen"), onBack = onBack)
         }
 
         item {

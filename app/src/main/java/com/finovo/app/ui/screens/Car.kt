@@ -60,6 +60,7 @@ fun CarScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "car",
                 title = S("car", "Auto"),
                 subtitle = S("alle_kosten_rund_ums_fahrzeug", "Alle Kosten rund ums Fahrzeug"),
                 onBack = onBack

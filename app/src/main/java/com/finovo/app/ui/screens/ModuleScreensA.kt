@@ -91,6 +91,7 @@ fun PrognoseScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "forecast",
             title = S("forecast_title", "Prognose"),
             subtitle = S("forecast_sub", "Erwartetes Monatsende aus echten Daten"),
             onBack = onBack
@@ -305,6 +306,7 @@ fun CashflowScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "cashflow",
             title = S("cf_title", "Cashflow"),
             subtitle = S("cf_sub", "Startbestand, Zu- und Abflüsse, Endbestand"),
             onBack = onBack
@@ -519,6 +521,7 @@ fun NetWorthScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "networth",
             title = S("nw_title", "Nettovermögen"),
             subtitle = S("nw_sub", "Vermögen minus Schulden"),
             onBack = onBack,
@@ -940,6 +943,7 @@ fun JahresberichtScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "yearreport",
             title = S("yr_title", "Jahresbericht"),
             subtitle = S("yr_sub", "Einnahmen, Ausgaben, Sparquote und Entwicklung"),
             onBack = onBack

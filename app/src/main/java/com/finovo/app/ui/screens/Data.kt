@@ -144,6 +144,7 @@ fun DataScreen(viewModel: AppViewModel, onBack: () -> Unit) {
             // Wurde hier ein Fehler abgefangen, zeigt die Karte die genaue Ursache.
             com.finovo.app.util.FehlerHinweis()
             ScreenTopBar(
+                tutorialId = "backup",
                 title = S("daten_2", "Daten"),
                 subtitle = S("backup_wiederherstellen_export_lokal_o", "Backup, Wiederherstellen & Export – lokal, ohne Cloud"),
                 onBack = onBack
@@ -266,7 +267,7 @@ fun DataScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         }
 
         item {
-            GroupTitle(S("wiederherstellen_3", "Wiederherstellen"))
+            GroupTitle(S("wiederherstellen_3", "Wiederherstellen"), tutorialId = "restore")
             Group {
                 SettingsRow(
                     title = S("backup_datei_auswaehlen", "📥 Backup-Datei auswählen"),
@@ -288,7 +289,7 @@ fun DataScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         }
 
         item {
-            GroupTitle(S("export", "Export"))
+            GroupTitle(S("export", "Export"), tutorialId = "csvexport")
             Group {
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState())

@@ -141,6 +141,7 @@ fun FinovoAiScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "finovoai",
             title = S("ai_title", "Finovo AI"),
             subtitle = S("ai_subtitle", "Deine Finanzen verstehen. Einfacher planen."),
             onBack = onBack,

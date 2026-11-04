@@ -133,6 +133,7 @@ fun DokumenteScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "documents",
             title = S("doc_title", "Dokumente"),
             subtitle = S("doc_sub", "Belege, Rechnungen, Verträge & mehr"),
             onBack = onBack,
@@ -500,6 +501,7 @@ fun ImportScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "import",
             title = S("import_title", "Daten importieren"),
             subtitle = S("import_subtitle", "CSV, Excel-Export oder Bankdatei"),
             onBack = onBack
@@ -746,6 +748,7 @@ fun VerlaufScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "audit",
             title = S("audit_title", "Änderungsverlauf"),
             subtitle = S("audit_sub", "Was wann gespeichert oder geändert wurde"),
             onBack = onBack
@@ -840,6 +843,7 @@ fun HaushaltScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "household",
             title = S("fam_title", "Haushalt"),
             subtitle = S("fam_sub", "Gemeinsame und eigene Ausgaben"),
             onBack = onBack
@@ -966,6 +970,7 @@ fun AlarmeScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "alarms",
             title = S("alarms_title", "Finanz-Alarme"),
             subtitle = S("alarms_sub", "Jeden Alarm einzeln ein- oder ausschalten"),
             onBack = onBack
@@ -1089,6 +1094,7 @@ fun DashboardAnpassenScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "widgets",
             title = S("widgets_title", "Übersicht anpassen"),
             subtitle = S("widgets_sub", "Reihenfolge ändern und Widgets ausblenden"),
             onBack = onBack

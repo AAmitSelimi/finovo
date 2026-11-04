@@ -147,6 +147,7 @@ fun ScanReviewScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "scanner",
             title = S("scan_review_title", "Rechnung prüfen"),
             subtitle = S("scan_review_sub", "Erkannte Daten kontrollieren"),
             onBack = onBack

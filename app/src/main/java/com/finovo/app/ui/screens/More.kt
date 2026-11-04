@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Calculate
@@ -90,6 +91,7 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "more",
             title = S("more_title", "Mehr"),
             subtitle = S("more_sub", "Einstellungen, Daten & Module")
         )
@@ -409,6 +411,13 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
                 GroupTitle(S("about", "Über"))
                 Group {
                     SettingsRow(
+                        title = S("tut_overview", "Anleitungen"),
+                        subtitle = S("tut_more_entry_sub", "Interaktive Anleitung für jedes Modul"),
+                        icon = Icons.Default.School,
+                        onClick = { onNavigate(Route.Tutorials) }
+                    )
+                    DividerLine()
+                    SettingsRow(
                         title = S("about_finovo", "Über Finovo"),
                         subtitle = S("version", "version 1.0"),
                         icon = Icons.Default.Info,
@@ -468,15 +477,21 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
 // ---------------------------------------------------------------------------
 
 @Composable
-internal fun GroupTitle(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = modifier.padding(start = 22.dp, end = 22.dp, top = 18.dp, bottom = 8.dp),
-    maxLines = 1,
-    overflow = TextOverflow.Ellipsis
-    )
+internal fun GroupTitle(text: String, modifier: Modifier = Modifier, tutorialId: String? = null) {
+    Row(
+        modifier = modifier.padding(start = 22.dp, end = if (tutorialId != null) 8.dp else 22.dp, top = if (tutorialId != null) 8.dp else 18.dp, bottom = if (tutorialId != null) 0.dp else 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        if (tutorialId != null) com.finovo.app.tutorial.TutorialHelpButton(tutorialId)
+    }
 }
 
 @Composable

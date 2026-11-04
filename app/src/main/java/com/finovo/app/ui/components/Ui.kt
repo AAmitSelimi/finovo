@@ -1215,7 +1215,8 @@ fun ScreenTopBar(
     title: String,
     subtitle: String? = null,
     onBack: (() -> Unit)? = null,
-    actions: @Composable (() -> Unit)? = null
+    actions: @Composable (() -> Unit)? = null,
+    tutorialId: String? = null
 ) {
     Row(
         modifier = Modifier
@@ -1246,6 +1247,9 @@ fun ScreenTopBar(
         }
         if (actions != null) {
             Row(verticalAlignment = Alignment.CenterVertically) { actions() }
+        }
+        if (tutorialId != null) {
+            com.finovo.app.tutorial.TutorialHelpButton(tutorialId)
         }
     }
 }

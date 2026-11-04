@@ -102,6 +102,7 @@ fun SubscriptionsScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "subscriptions",
                 title = S("subscriptions", "Abos"),
                 subtitle = if (summary.count == 0) null else plurals("pl_subs_active", summary.count, "%1\$d aktives Abo", "%1\$d aktive Abos"),
                 onBack = onBack

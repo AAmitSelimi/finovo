@@ -131,6 +131,7 @@ fun ExpensesScreen(viewModel: AppViewModel, onBack: () -> Unit = {}) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "expenses",
             title = S("expenses_title", "Ausgaben"),
             onBack = onBack,
             actions = {

@@ -51,6 +51,7 @@ fun InsightsScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "insights",
                 title = S("insights", "Analyse"),
                 subtitle = S("erkenntnisse_aus_deinen_daten", "Erkenntnisse aus deinen Daten"),
                 onBack = onBack

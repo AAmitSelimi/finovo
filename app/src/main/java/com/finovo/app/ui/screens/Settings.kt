@@ -109,11 +109,11 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item {
-            ScreenTopBar(title = S("einstellungen", "Einstellungen"), onBack = onBack)
+            ScreenTopBar( tutorialId = "settings", title = S("einstellungen", "Einstellungen"), onBack = onBack)
         }
 
         item {
-            GroupTitle(S("erscheinungsbild_2", "Erscheinungsbild"))
+            GroupTitle(S("erscheinungsbild_2", "Erscheinungsbild"), tutorialId = "appearance")
             Group {
                 SettingsRow(
                     title = S("heller_modus", "Heller Modus"),
@@ -148,7 +148,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
         }
 
         item {
-            GroupTitle(S("allgemein", "Allgemein"))
+            GroupTitle(S("allgemein", "Allgemein"), tutorialId = "currency")
             Group {
                 SettingsRow(
                     title = S("waehrung_2", "Währung"),
@@ -181,7 +181,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
         }
 
         item {
-            GroupTitle(S("benachrichtigungen_2", "Benachrichtigungen"))
+            GroupTitle(S("benachrichtigungen_2", "Benachrichtigungen"), tutorialId = "notifications")
             Group {
                 SwitchRow(
                     title = S("erinnerungen_aktiv", "Erinnerungen aktiv"),
@@ -250,7 +250,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
             val bioStatus = remember(sec.face, sec.fingerprint, settings.biometricEnabled) {
                 com.finovo.app.security.Biometrics.status(ctx, sec)
             }
-            GroupTitle(S("sec_privacy_title", "Sicherheit und Datenschutz"))
+            GroupTitle(S("sec_privacy_title", "Sicherheit und Datenschutz"), tutorialId = "security")
             Group {
                 SwitchRow(
                     title = S("app_sperre_2", "App-Sperre"),
@@ -377,7 +377,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
 
         item {
             val context = LocalContext.current
-            GroupTitle(S("sprache_2", "Sprache"))
+            GroupTitle(S("sprache_2", "Sprache"), tutorialId = "language")
             Group {
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
                     DropdownField(
@@ -465,7 +465,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
 
             // ----------------------- Mehrere Währungen (Modul 34) ------------------
             Column {
-                GroupTitle(S("fx_title", "Währungen & Umrechnung"))
+                GroupTitle(S("fx_title", "Währungen & Umrechnung"), tutorialId = "currency")
                 Group {
                     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                         Text(
@@ -519,7 +519,7 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
 
             // ------------------------- Privatsphäre (Modul 38) ---------------------
             Column {
-                GroupTitle(S("privacy_title", "Privatsphäre"))
+                GroupTitle(S("privacy_title", "Privatsphäre"), tutorialId = "privacy")
                 Group {
                     SwitchRow(
                         title = S("dup_warnings", "Warnung bei möglichen Doppelbuchungen"),

@@ -173,6 +173,7 @@ fun BelegScanScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
+            tutorialId = "receipts",
             title = S("scan_receipt_title", "Beleg prüfen"),
             subtitle = S("scan_receipt_sub", "Bitte alle Felder kontrollieren"),
             onBack = onBack

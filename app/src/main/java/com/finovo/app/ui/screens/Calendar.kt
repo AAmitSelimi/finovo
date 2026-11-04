@@ -78,7 +78,7 @@ fun CalendarScreen(viewModel: AppViewModel, onBack: () -> Unit) {
         contentPadding = PaddingValues(bottom = 110.dp)
     ) {
         item {
-            ScreenTopBar(title = S("calendar", "Kalender"), subtitle = S("calendar_sub", "Erwartete Einnahmen & Ausgaben"), onBack = onBack)
+            ScreenTopBar( tutorialId = "calendar", title = S("calendar", "Kalender"), subtitle = S("calendar_sub", "Erwartete Einnahmen & Ausgaben"), onBack = onBack)
         }
 
         item {

@@ -125,9 +125,13 @@ fun BillsScreen(viewModel: AppViewModel) {
                 .padding(horizontal = 20.dp)
                 .padding(top = 14.dp, bottom = 8.dp)
         ) {
-            Text(S("meine_rechnungen", "Meine Rechnungen"), style = MaterialTheme.typography.headlineSmall,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(S("meine_rechnungen", "Meine Rechnungen"), style = MaterialTheme.typography.headlineSmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f))
+                com.finovo.app.tutorial.TutorialHelpButton("bills")
+            }
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(

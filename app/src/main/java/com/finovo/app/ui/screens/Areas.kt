@@ -79,6 +79,7 @@ fun AreasScreen(viewModel: AppViewModel, onBack: () -> Unit) {
     ) {
         item {
             ScreenTopBar(
+                tutorialId = "areas",
                 title = S("areas", "Bereiche"),
                 subtitle = S("finanzen_getrennt_fuehren", "Finanzen getrennt führen"),
                 onBack = onBack

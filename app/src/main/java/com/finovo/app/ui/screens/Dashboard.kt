@@ -203,6 +203,7 @@ fun DashboardScreen(
                     Spacer(Modifier.width(10.dp))
                     com.finovo.app.ui.components.FinovoWordmark(fontSize = 22.sp)
                     Spacer(Modifier.weight(1f))
+                    com.finovo.app.tutorial.TutorialHelpButton("dashboard")
                     IconButton(onClick = { viewModel.navigate(com.finovo.app.ui.Route.WidgetsEdit) }) {
                         Icon(
                             Icons.Default.Tune,
