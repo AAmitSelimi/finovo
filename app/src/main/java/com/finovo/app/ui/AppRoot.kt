@@ -139,7 +139,7 @@ private val tabs = listOf(
 )
 
 @Composable
-fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
+fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential: () -> Unit = {}) {
     val settings by viewModel.settings.collectAsState()
     val stack by viewModel.stack.collectAsState()
     val current = stack.lastOrNull() ?: Route.Home
@@ -189,7 +189,11 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit) {
                         onUnlocked = { viewModel.unlock() },
                         onBiometric = onBiometric,
                         biometricEnabled = settings.biometricEnabled && biometricAvailable,
-                        verify = { viewModel.checkPin(it) }
+                        verify = { viewModel.checkPin(it) },
+                        hasPin = settings.pinHash.isNotBlank(),
+                        deviceCredential = viewModel.security.collectAsState().value.deviceCredential,
+                        onDeviceCredential = onDeviceCredential,
+                        info = viewModel.lockInfo.collectAsState().value
                     )
                 }
             } else {

@@ -452,18 +452,69 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun evaluateLock() {
+    // Zusätzliche Sperr-Einstellungen (SharedPreferences, nicht Room)
+    private val _security = MutableStateFlow(
+        com.finovo.app.security.SecurityPrefs.load(getApplication())
+    )
+    val security: StateFlow<com.finovo.app.security.SecuritySettings> = _security
+
+    private val _lockInfo = MutableStateFlow<String?>(null)
+    val lockInfo: StateFlow<String?> = _lockInfo
+    fun setLockInfo(text: String?) { _lockInfo.value = text }
+
+    fun updateSecurity(change: (com.finovo.app.security.SecuritySettings) -> com.finovo.app.security.SecuritySettings) {
+        val next = change(_security.value)
+        _security.value = next
+        com.finovo.app.security.SecurityPrefs.save(getApplication(), next)
+    }
+
+    /** Ist die App-Sperre wirklich nutzbar (PIN gesetzt oder Geräte-Authentifizierung möglich)? */
+    fun lockActive(): Boolean {
         val s = settings.value
-        _locked.value = s.appLockEnabled && s.pinHash.isNotBlank()
+        if (!s.appLockEnabled) return false
+        return s.pinHash.isNotBlank() ||
+            (_security.value.deviceCredential &&
+                com.finovo.app.security.Biometrics.deviceCredentialReady(getApplication()))
+    }
+
+    fun hasAppPin(): Boolean = settings.value.pinHash.isNotBlank()
+
+    fun evaluateLock(coldStart: Boolean = false) {
+        val s = settings.value
         _biometricAvailable.value = s.biometricEnabled
+        if (!lockActive()) { _locked.value = false; return }
+        if (coldStart) {
+            _locked.value = com.finovo.app.security.LockPolicy.shouldLock(
+                coldStart = true,
+                alwaysUnlock = _security.value.alwaysUnlock,
+                lastBackgroundMs = com.finovo.app.security.SecurityPrefs.lastBackground(getApplication()),
+                nowMs = System.currentTimeMillis(),
+                timeoutSeconds = _security.value.timeoutSeconds
+            )
+        }
+    }
+
+    /** Beim Zurückkehren in die App: nach Ablauf der Zeit sperren. */
+    fun lockIfTimedOut() {
+        if (!lockActive() || _locked.value) return
+        if (com.finovo.app.security.LockPolicy.shouldLock(
+                coldStart = false,
+                alwaysUnlock = _security.value.alwaysUnlock,
+                lastBackgroundMs = com.finovo.app.security.SecurityPrefs.lastBackground(getApplication()),
+                nowMs = System.currentTimeMillis(),
+                timeoutSeconds = _security.value.timeoutSeconds
+            )
+        ) _locked.value = true
     }
 
     fun lockNow() {
-        if (settings.value.appLockEnabled && settings.value.pinHash.isNotBlank()) _locked.value = true
+        if (lockActive()) _locked.value = true
     }
 
     fun unlock() {
         _locked.value = false
+        _lockInfo.value = null
+        com.finovo.app.security.SecurityPrefs.setLastBackground(getApplication(), 0L)
     }
 
     fun setPin(pin: String): Boolean {
@@ -485,21 +536,26 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     fun removePin() {
         viewModelScope.launch {
             repository.updateSettings {
-                it.copy(pinHash = "", pinSalt = "", appLockEnabled = false, biometricEnabled = false)
+                val deviceOk = _security.value.deviceCredential &&
+                    com.finovo.app.security.Biometrics.deviceCredentialReady(getApplication())
+                it.copy(pinHash = "", pinSalt = "", appLockEnabled = it.appLockEnabled && deviceOk,
+                    biometricEnabled = it.biometricEnabled && it.appLockEnabled && deviceOk)
             }
-            _locked.value = false
-            message(S(getApplication(), "app_sperre_entfernt", "App-Sperre entfernt."))
+            if (!lockActive()) _locked.value = false
+            message(S(getApplication(), "app_sperre_entfernt", "App-PIN entfernt."))
         }
     }
 
     fun setAppLockEnabled(enabled: Boolean) {
         val s = settings.value
-        if (enabled && s.pinHash.isBlank()) {
+        val deviceOk = _security.value.deviceCredential &&
+            com.finovo.app.security.Biometrics.deviceCredentialReady(getApplication())
+        if (enabled && s.pinHash.isBlank() && !deviceOk) {
             _pinPrompt.value = "create"
             return
         }
         viewModelScope.launch {
-            repository.updateSettings { it.copy(appLockEnabled = enabled) }
+            repository.updateSettings { it.copy(appLockEnabled = enabled, biometricEnabled = it.biometricEnabled && enabled) }
             if (!enabled) _locked.value = false
         }
     }

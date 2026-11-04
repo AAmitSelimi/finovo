@@ -75,7 +75,7 @@ class MainActivity : FragmentActivity() {
 
         runCatching { DailyWork.schedule(this) }
         Notify.createChannels(this)
-        viewModel.evaluateLock()
+        viewModel.evaluateLock(coldStart = true)
 
         setContent {
             val settings by viewModel.settings.collectAsState()
@@ -88,69 +88,101 @@ class MainActivity : FragmentActivity() {
             controller.isAppearanceLightStatusBars = !darkTheme
             controller.isAppearanceLightNavigationBars = !darkTheme
 
+            // Inhalt in der App-Übersicht und in Screenshots verbergen, solange eine Sperre eingerichtet ist.
+            androidx.compose.runtime.SideEffect {
+                if (settings.appLockEnabled) {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                } else {
+                    window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+                }
+            }
+
             AppRoot(
                 viewModel = viewModel,
-                onBiometric = { showBiometricPrompt() }
+                onBiometric = { showBiometricPrompt() },
+                onDeviceCredential = { showDeviceCredentialPrompt() }
             )
         }
     }
 
+    private var promptShowing = false
+    private var firstResume = true
+
     override fun onResume() {
         super.onResume()
         viewModel.refreshToday()
-        viewModel.evaluateLock()
-        if (viewModel.locked.value) {
-            val settings = viewModel.settings.value
-            if (settings.biometricEnabled && canUseBiometric()) {
-                showBiometricPrompt()
-            }
-        }
+        viewModel.evaluateLock(coldStart = firstResume)
+        if (!firstResume) viewModel.lockIfTimedOut()
+        firstResume = false
+        if (viewModel.locked.value) startAutoUnlock()
     }
 
     override fun onPause() {
         super.onPause()
-        viewModel.lockNow()
+        if (promptShowing) return              // der System-Dialog pausiert die App nicht wirklich
+        com.finovo.app.security.SecurityPrefs.setLastBackground(this, System.currentTimeMillis())
+        if (viewModel.security.value.timeoutSeconds == 0) viewModel.lockNow()
     }
 
-    private fun canUseBiometric(): Boolean {
-        val manager = BiometricManager.from(this)
-        return manager.canAuthenticate(
-            BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                BiometricManager.Authenticators.BIOMETRIC_WEAK
-        ) == BiometricManager.BIOMETRIC_SUCCESS
+    /** Biometrie automatisch starten; ist sie nicht nutzbar, direkt die Geräte-Authentifizierung. */
+    private fun startAutoUnlock() {
+        if (promptShowing) return
+        val sec = viewModel.security.value
+        val bioOn = viewModel.settings.value.biometricEnabled
+        val status = com.finovo.app.security.Biometrics.status(this, sec)
+        if (bioOn && status == com.finovo.app.security.BioStatus.READY) {
+            authenticate(com.finovo.app.security.AuthMode.BIOMETRIC)
+        } else {
+            if (bioOn) viewModel.setLockInfo(com.finovo.app.security.Biometrics.message(this, status))
+            if (!viewModel.hasAppPin() && sec.deviceCredential &&
+                com.finovo.app.security.Biometrics.deviceCredentialReady(this)
+            ) authenticate(com.finovo.app.security.AuthMode.DEVICE)
+        }
     }
 
+    private fun authenticate(mode: com.finovo.app.security.AuthMode) {
+        if (promptShowing) return
+        val sec = viewModel.security.value
+        promptShowing = true
+        com.finovo.app.security.Biometrics.authenticate(
+            activity = this,
+            settings = sec,
+            mode = mode,
+            hasAppPin = viewModel.hasAppPin(),
+            onSuccess = { viewModel.unlock() },
+            onInfo = { viewModel.setLockInfo(it) },
+            onFallback = {
+                if (sec.deviceCredential && com.finovo.app.security.Biometrics.deviceCredentialReady(this) &&
+                    mode == com.finovo.app.security.AuthMode.BIOMETRIC
+                ) {
+                    promptShowing = false
+                    authenticate(com.finovo.app.security.AuthMode.DEVICE)
+                }
+            },
+            onEnded = { promptShowing = false }
+        )
+    }
+
+    /** Vom Sperrbildschirm: Fingerabdruck / Gesicht. */
     private fun showBiometricPrompt() {
-        if (!canUseBiometric()) {
-            viewModel.message(str("msg_biometric_unavailable", "Biometrie ist auf diesem Gerät nicht verfügbar oder nicht eingerichtet."))
+        val sec = viewModel.security.value
+        val status = com.finovo.app.security.Biometrics.status(this, sec)
+        if (status != com.finovo.app.security.BioStatus.READY) {
+            viewModel.setLockInfo(
+                com.finovo.app.security.Biometrics.message(this, status)
+                    ?: str("msg_biometric_unavailable", "Biometrie ist auf diesem Gerät nicht verfügbar oder nicht eingerichtet.")
+            )
             return
         }
-        val prompt = BiometricPrompt(
-            this,
-            ContextCompat.getMainExecutor(this),
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-                    super.onAuthenticationSucceeded(result)
-                    viewModel.unlock()
-                }
+        authenticate(com.finovo.app.security.AuthMode.BIOMETRIC)
+    }
 
-                override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
-                    super.onAuthenticationError(errorCode, errString)
-                    viewModel.message(errString.toString())
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    viewModel.message(str("msg_biometric_failed", "Fingerabdruck nicht erkannt. Bitte PIN verwenden."))
-                }
-            }
-        )
-        prompt.authenticate(
-            BiometricPrompt.PromptInfo.Builder()
-                .setTitle(S(this, "unlock_finovo", "Finovo entsperren"))
-                .setSubtitle(str("biometric_subtitle", "Bestätige deinen Fingerabdruck"))
-                .setNegativeButtonText(str("biometric_use_pin", "PIN verwenden"))
-                .build()
-        )
+    /** Vom Sperrbildschirm: "Mit Geräte-PIN entsperren". */
+    private fun showDeviceCredentialPrompt() {
+        if (!com.finovo.app.security.Biometrics.deviceCredentialReady(this)) {
+            viewModel.setLockInfo(str("bio_no_device_credential", "Auf dem Gerät ist keine PIN, kein Passwort und kein Muster eingerichtet."))
+            return
+        }
+        authenticate(com.finovo.app.security.AuthMode.DEVICE)
     }
 }

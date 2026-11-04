@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -66,7 +68,11 @@ fun LockScreen(
     onUnlocked: () -> Unit,
     onBiometric: () -> Unit,
     biometricEnabled: Boolean,
-    verify: (String) -> Boolean
+    verify: (String) -> Boolean,
+    hasPin: Boolean = true,
+    deviceCredential: Boolean = false,
+    onDeviceCredential: () -> Unit = {},
+    info: String? = null
 ) {
     var entered by remember { mutableStateOf("") }
     var error by remember { mutableStateOf(false) }
@@ -96,6 +102,7 @@ fun LockScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(androidx.compose.foundation.rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -104,21 +111,58 @@ fun LockScreen(
             painter = androidx.compose.ui.res.painterResource(id = com.finovo.app.R.drawable.finovo_logo),
             contentDescription = S("finovo", "Finovo"),
             modifier = Modifier
-                .size(72.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .size(88.dp)
+                .clip(RoundedCornerShape(22.dp))
         )
         Spacer(Modifier.height(14.dp))
-        Text(S("willkommen_zurueck", "Willkommen zurück"), style = MaterialTheme.typography.headlineSmall,
+        Text(S("lock_welcome", "Willkommen zurück bei Finovo"), style = MaterialTheme.typography.headlineSmall,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.height(6.dp))
         Text(
-            S("bitte_gib_deine_pin_ein", "Bitte gib deine PIN ein"),
+            S("lock_subtitle", "Entsperre deine Finanzübersicht"),
             style = MaterialTheme.typography.bodyMedium,
             color = appColors().textMuted
         )
         Spacer(Modifier.height(28.dp))
 
+        if (biometricEnabled) {
+            Box(
+                modifier = Modifier
+                    .size(88.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .clickable(onClick = onBiometric),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Fingerprint,
+                    contentDescription = S("mit_fingerabdruck_entsperren", "Mit Fingerabdruck oder Gesicht entsperren"),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(44.dp)
+                )
+            }
+            Spacer(Modifier.height(10.dp))
+            Text(
+                S("lock_bio_hint", "Fingerabdruck oder Gesicht"),
+                style = MaterialTheme.typography.bodySmall,
+                color = appColors().textMuted
+            )
+            Spacer(Modifier.height(20.dp))
+        }
+
+        if (!info.isNullOrBlank()) {
+            Text(
+                info,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+            )
+            Spacer(Modifier.height(10.dp))
+        }
+
+        if (hasPin) {
         Row(
             modifier = Modifier.offset(x = offsetX.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -192,27 +236,7 @@ fun LockScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
                     row.forEach { key ->
                         when (key) {
-                            "bio" -> {
-                                if (biometricEnabled) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(72.dp)
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.primaryContainer)
-                                            .clickable(onClick = onBiometric),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            Icons.Default.Fingerprint,
-                                            contentDescription = S("mit_fingerabdruck_entsperren", "Mit Fingerabdruck entsperren"),
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(30.dp)
-                                        )
-                                    }
-                                } else {
-                                    Spacer(Modifier.size(72.dp))
-                                }
-                            }
+                            "bio" -> Spacer(Modifier.size(72.dp))
                             "⌫" -> Box(
                                 modifier = Modifier
                                     .size(72.dp)
@@ -242,16 +266,18 @@ fun LockScreen(
             }
         }
 
-        if (biometricEnabled) {
-            Spacer(Modifier.height(18.dp))
-            Text(
-                S("alternativ_mit_fingerabdruck_entsperre", "Alternativ mit Fingerabdruck entsperren"),
-                style = MaterialTheme.typography.bodySmall,
-                color = appColors().textMuted,
-                textAlign = TextAlign.Center,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-            )
+        }
+
+        if (deviceCredential) {
+            Spacer(Modifier.height(if (hasPin) 18.dp else 8.dp))
+            androidx.compose.material3.OutlinedButton(
+                onClick = onDeviceCredential,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.size(8.dp))
+                Text(S("lock_device_pin", "Mit Geräte-PIN entsperren"))
+            }
         }
     }
 }

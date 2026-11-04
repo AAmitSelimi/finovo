@@ -202,15 +202,23 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
         }
 
         item {
-            GroupTitle(S("sicherheit", "Sicherheit"))
+            val ctx = LocalContext.current
+            val sec by viewModel.security.collectAsState()
+            val deviceReady = remember(settings.appLockEnabled, sec.deviceCredential) {
+                com.finovo.app.security.Biometrics.deviceCredentialReady(ctx)
+            }
+            val bioStatus = remember(sec.face, sec.fingerprint, settings.biometricEnabled) {
+                com.finovo.app.security.Biometrics.status(ctx, sec)
+            }
+            GroupTitle(S("sec_privacy_title", "Sicherheit und Datenschutz"))
             Group {
                 SwitchRow(
                     title = S("app_sperre_2", "App-Sperre"),
-                    subtitle = if (settings.appLockEnabled) S("beim_oeffnen_wird_die_pin_verlangt", "Beim Öffnen wird die PIN verlangt")
+                    subtitle = if (settings.appLockEnabled) S("sec_lock_on", "Finovo ist gesperrt, bis du dich authentifizierst")
                     else str("app_open_free", "App ist ohne Prüfung zugänglich"),
                     checked = settings.appLockEnabled,
                     onCheckedChange = { enabled ->
-                        if (enabled && settings.pinHash.isBlank()) {
+                        if (enabled && settings.pinHash.isBlank() && !(sec.deviceCredential && deviceReady)) {
                             showPinDialog = "create"
                         } else {
                             viewModel.setAppLockEnabled(enabled)
@@ -218,55 +226,113 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
                     },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
-                DividerLine()
-                SettingsRow(
-                    title = if (settings.pinHash.isBlank()) str("pin_create", "PIN festlegen") else str("pin_change", "PIN ändern"),
-                    subtitle = if (settings.pinHash.isBlank()) str("pin_none", "Noch keine PIN gesetzt")
-                    else str("pin_set_encrypted", "PIN ist gesetzt (verschlüsselt gespeichert)"),
-                    emoji = "🔐",
-                    onClick = { showPinDialog = if (settings.pinHash.isBlank()) "create" else "change" }
-                )
-                if (settings.pinHash.isNotBlank()) {
+                if (settings.appLockEnabled) {
                     DividerLine()
                     SwitchRow(
-                        title = S("fingerabdruck_biometrie", "Fingerabdruck / Biometrie"),
-                        subtitle = S("zusaetzlich_zur_pin_nutzbar", "Zusätzlich zur PIN nutzbar"),
+                        title = S("sec_bio_enable", "Biometrische Entsperrung"),
+                        subtitle = com.finovo.app.security.Biometrics.message(ctx, bioStatus)
+                            ?: S("sec_bio_enable_sub", "Fingerabdruck oder Gesicht, gesichert durch das Android-System"),
                         checked = settings.biometricEnabled,
                         onCheckedChange = { viewModel.setBiometricEnabled(it) },
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
+                    if (settings.biometricEnabled) {
+                        DividerLine()
+                        SwitchRow(
+                            title = S("sec_fingerprint", "Fingerabdruck verwenden"),
+                            subtitle = if (com.finovo.app.security.Biometrics.hasFingerprintHardware(ctx))
+                                S("sec_fingerprint_sub", "Starke Biometrie")
+                            else S("sec_no_fingerprint_hw", "Auf diesem Gerät nicht erkannt"),
+                            checked = sec.fingerprint,
+                            onCheckedChange = { on ->
+                                viewModel.updateSecurity { it.copy(fingerprint = on) }
+                            },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                        DividerLine()
+                        SwitchRow(
+                            title = S("sec_face", "Gesichtserkennung verwenden"),
+                            subtitle = if (com.finovo.app.security.Biometrics.hasFaceHardware(ctx))
+                                S("sec_face_sub", "Erlaubt auch schwächere Biometrie (je nach Gerät)")
+                            else S("sec_no_face_hw", "Nur, wenn das Gerät sie unterstützt und eingerichtet hat"),
+                            checked = sec.face,
+                            onCheckedChange = { on ->
+                                viewModel.updateSecurity { it.copy(face = on) }
+                            },
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
+                    DividerLine()
+                    SwitchRow(
+                        title = S("sec_device_pin", "Alternative Geräte-PIN verwenden"),
+                        subtitle = if (deviceReady) S("sec_device_pin_sub", "Geräte-PIN, Passwort oder Muster als Ersatz")
+                        else S("sec_device_pin_none", "Auf dem Gerät ist keine Bildschirmsperre eingerichtet"),
+                        checked = sec.deviceCredential,
+                        onCheckedChange = { on ->
+                            viewModel.updateSecurity { it.copy(deviceCredential = on) }
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    DividerLine()
+                    SettingsRow(
+                        title = if (settings.pinHash.isBlank()) str("pin_create", "PIN festlegen") else str("pin_change", "PIN ändern"),
+                        subtitle = if (settings.pinHash.isBlank()) str("sec_app_pin_optional", "Optional: eigene Finovo-PIN")
+                        else str("pin_set_encrypted", "PIN ist gesetzt (verschlüsselt gespeichert)"),
+                        emoji = "🔐",
+                        onClick = { showPinDialog = if (settings.pinHash.isBlank()) "create" else "change" }
+                    )
                     DividerLine()
                     Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
+                        val labels = listOf(
+                            0 to S("sec_t_now", "Sofort"),
+                            30 to S("sec_t_30", "Nach 30 Sekunden"),
+                            60 to S("sec_t_60", "Nach 1 Minute"),
+                            300 to S("sec_t_300", "Nach 5 Minuten")
+                        )
                         DropdownField(
                             label = S("automatische_sperre", "Automatische Sperre"),
-                            options = listOf(str("timeout_off", "Aus"), str("timeout_1min", "1 Minute"), str("timeout_5min", "5 Minuten"), str("timeout_15min", "15 Minuten"), str("timeout_30min", "30 Minuten")),
-                            selected = when (settings.autoLockMinutes) {
-                                1 -> str("timeout_1min", "1 Minute"); 5 -> str("timeout_5min", "5 Minuten"); 15 -> str("timeout_15min", "15 Minuten"); 30 -> str("timeout_30min", "30 Minuten"); else -> str("timeout_off", "Aus")
-                            },
+                            options = labels.map { it.second },
+                            selected = labels.firstOrNull { it.first == sec.timeoutSeconds }?.second ?: labels[1].second,
                             optionLabel = { it },
                             onSelect = { sel ->
-                                viewModel.setAutoLockMinutes(
-                                    when (sel) {
-                                        str("timeout_1min", "1 Minute") -> 1; str("timeout_5min", "5 Minuten") -> 5; str("timeout_15min", "15 Minuten") -> 15; str("timeout_30min", "30 Minuten") -> 30; else -> 0
-                                    }
-                                )
+                                labels.firstOrNull { it.second == sel }?.let { pick ->
+                                    viewModel.updateSecurity { it.copy(timeoutSeconds = pick.first) }
+                                }
                             }
                         )
                         Text(
-                            S("sperrt_die_app_automatisch_wenn_sie_fu", "Sperrt die App automatisch, wenn sie für diese Zeit im Hintergrund war."),
+                            S("sec_auto_sub", "Sperrt die App, wenn sie so lange im Hintergrund war."),
                             style = MaterialTheme.typography.bodySmall,
                             color = appColors().textMuted
                         )
                     }
                     DividerLine()
-                    SettingsRow(
-                        title = S("pin_entfernen", "PIN entfernen"),
-                        subtitle = S("app_sperre_deaktivieren", "App-Sperre deaktivieren"),
-                        emoji = "🗝️",
-                        onClick = { viewModel.removePin() }
+                    SwitchRow(
+                        title = S("sec_always", "App beim Öffnen immer entsperren"),
+                        subtitle = S("sec_always_sub", "Nach einem Neustart der App wird immer gefragt"),
+                        checked = sec.alwaysUnlock,
+                        onCheckedChange = { on ->
+                            viewModel.updateSecurity { it.copy(alwaysUnlock = on) }
+                        },
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
+                    if (settings.pinHash.isNotBlank()) {
+                        DividerLine()
+                        SettingsRow(
+                            title = S("pin_entfernen", "PIN entfernen"),
+                            subtitle = S("sec_remove_pin_sub", "Entfernt nur die Finovo-PIN"),
+                            emoji = "🗝️",
+                            onClick = { viewModel.removePin() }
+                        )
+                    }
                 }
             }
+            Text(
+                S("sec_privacy_note", "Finovo speichert keine Fingerabdrücke oder Gesichtsdaten. Die Prüfung macht ausschließlich das Android-System. In der App-Übersicht und auf Screenshots bleibt der Inhalt verborgen, solange die Sperre aktiv ist."),
+                style = MaterialTheme.typography.bodySmall,
+                color = appColors().textMuted,
+                modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+            )
         }
 
         item {
