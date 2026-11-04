@@ -60,6 +60,25 @@ import com.finovo.app.util.*
 import com.finovo.app.data.*
 import com.finovo.app.util.S
 import com.finovo.app.util.str
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.Restore
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.Insights
+import androidx.compose.material.icons.outlined.MonitorHeart
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.outlined.NoAccounts
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.NewReleases
+import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.DeleteOutline
+import androidx.compose.ui.graphics.vector.ImageVector
 
 @Composable
 fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
@@ -93,94 +112,102 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
 
     val gesamt = expenses.size + incomes.size + bills.size + rules.size + kategorien.size +
         bereiche.size + ziele.size + abos.size + dokumente.size + werte.size + verlauf.size
+    val versionText = paket?.versionName ?: S("about_unknown", "unbekannt")
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 40.dp)
     ) {
         item {
-            ScreenTopBar(title = S("ueber", "Über"), onBack = onBack)
+            ScreenTopBar(title = S("about_finovo", "Über Finovo"), onBack = onBack)
         }
+
+        // ------------------------------------------------------------ Hero
         item {
-            ErrorLogCard()
+            AboutHero(
+                version = paket?.versionName?.let { S("about_version_value", "Version %1\$s", it) }
+                    ?: S("about_version_unknown", "Version unbekannt")
+            )
         }
+
+        // --------------------------------------------------- Funktionsweise
         item {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                FinovoLogo(
-                    iconSize = 104.dp,
-                    fontSize = 26.sp,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    paket?.versionName?.let { S("about_version_value", "Version %1\$s", it) }
-                        ?: S("about_version_unknown", "Version unbekannt"),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = appColors().textMuted
-                )
-            }
-        }
-        item {
-            GroupTitle(S("funktionsweise", "Funktionsweise"))
-            Group {
-                Column(modifier = Modifier.padding(16.dp)) {
+            AboutSection(Icons.Outlined.Info, S("funktionsweise", "Funktionsweise")) {
+                Column(modifier = Modifier.padding(18.dp)) {
                     Text(
-                        S("finovo_ist_eine_private_offline_funkti", "Finovo ist eine private, offline funktionierende Finanz-App für eine Person. ") +
-                            S("es_gibt_keine_registrierung_kein_k", "Es gibt keine Registrierung, kein Konto, keine Cloud und keine Internetverbindung. ") +
-                            S("alle_daten_werden_in_einer_lokalen", "Alle Daten werden in einer lokalen Datenbank (SQLite/Room) auf diesem Gerät gespeichert."),
+                        S("ab_how_p1", "Finovo ist deine persönliche Finanzverwaltung. Verwalte deine Einnahmen, Ausgaben, Rechnungen und Sparziele einfach und übersichtlich an einem Ort."),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        S("ab_how_p2", "Deine Privatsphäre steht an erster Stelle. Finovo speichert deine Finanzdaten lokal auf deinem Gerät. Keine Registrierung, kein Benutzerkonto und keine Cloud-Synchronisierung. Deine Daten bleiben unter deiner Kontrolle."),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
         }
+
+        // ---------------------------------------------- Deine Finanzuebersicht
         item {
-            GroupTitle(S("daten_auf_diesem_geraet", "Daten auf diesem Gerät"))
-            Group {
-                InfoLine(S("ausgaben_4", "Ausgaben"), "${expenses.size}")
+            AboutSection(Icons.Outlined.AccountBalanceWallet, S("ab_overview_title", "Deine Finanzübersicht")) {
+                InfoLine(S("ab_cnt_expenses", "Erfasste Ausgaben"), "${expenses.size}")
                 DividerLine()
-                InfoLine(S("einnahmen_4", "Einnahmen"), "${incomes.size}")
+                InfoLine(S("ab_cnt_incomes", "Erfasste Einnahmen"), "${incomes.size}")
                 DividerLine()
-                InfoLine(S("rechnungen_2", "Rechnungen"), "${bills.size}")
+                InfoLine(S("ab_cnt_bills", "Gespeicherte Rechnungen"), "${bills.size}")
                 DividerLine()
-                InfoLine(str("about_recurring_rules", "Wiederkehrende Zahlungen"), "${rules.size}")
+                InfoLine(S("ab_cnt_recurring", "Regelmäßige Zahlungen"), "${rules.size}")
                 DividerLine()
-                InfoLine(str("about_currency", "Währung"), "${settings.currency} (${settings.currencySymbol})")
+                InfoLine(S("ab_cnt_currency", "Standardwährung"), "${settings.currency} (${settings.currencySymbol})")
                 DividerLine()
+                InfoLine(S("ab_cnt_categories", "Ausgabenkategorien"), "${kategorien.size}")
                 DividerLine()
-                InfoLine(S("kategorien", "Kategorien"), "${kategorien.size}")
+                InfoLine(S("ab_cnt_areas", "Finanzbereiche"), "${bereiche.size}")
                 DividerLine()
-                InfoLine(S("areas", "Bereiche"), "${bereiche.size}")
+                InfoLine(S("ab_cnt_goals", "Deine Sparziele"), "${ziele.size}")
                 DividerLine()
-                InfoLine(S("goals", "Sparziele"), "${ziele.size}")
-                DividerLine()
-                InfoLine(S("subscriptions", "Abos"), "${abos.size}")
+                InfoLine(S("ab_cnt_subscriptions", "Abonnements"), "${abos.size}")
                 DividerLine()
                 InfoLine(S("doc_title", "Dokumente"), "${dokumente.size}")
                 DividerLine()
                 InfoLine(S("nw_assets", "Vermögen"), "${werte.size}")
                 DividerLine()
                 InfoLine(S("audit_title", "Änderungsverlauf"), "${verlauf.size}")
-                DividerLine()
-                InfoLine(
-                    str("about_last_backup", "Letztes Backup"),
-                    if (settings.lastBackupAt > 0) {
-                        Dates.full(Dates.millisToLocalDate(settings.lastBackupAt))
-                    } else str("about_no_backup", "noch keins")
-                )
             }
         }
+
+        // ---------------------------------------------------- Systemstatus
         item {
-            GroupTitle(S("about_app_info", "App-Informationen"))
-            Group {
-                InfoLine(
-                    S("about_version", "Version"),
-                    paket?.versionName ?: S("about_unknown", "unbekannt")
-                )
+            AboutSection(Icons.Outlined.MonitorHeart, S("ab_status_title", "Systemstatus")) {
+                ErrorLogContent()
+            }
+        }
+
+        // ------------------------------------------------ App-Informationen
+        item {
+            AboutSection(Icons.Outlined.PhoneAndroid, S("about_app_info", "App-Informationen")) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconBadge(Icons.Outlined.NewReleases)
+                    Spacer(Modifier.width(12.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            S("ab_current_version", "Aktuelle App-Version"),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = appColors().textMuted
+                        )
+                        Text(
+                            versionText,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
                 DividerLine()
                 InfoLine(S("about_build", "Build"), paket?.let { buildNummer(it).toString() } ?: "—")
                 DividerLine()
@@ -203,17 +230,7 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 DividerLine()
                 InfoLine(S("sprache", "Sprache"), AppLocale.nativeName(settings.language))
                 DividerLine()
-                InfoLine(S("waehrung", "Währung"), "${settings.currency} (${settings.currencySymbol})")
-                DividerLine()
                 InfoLine(S("about_offline", "Offline"), S("about_offline_value", "Keine Verbindung nötig"))
-                DividerLine()
-                InfoLine(S("about_entries", "Einträge gesamt"), "$gesamt")
-                DividerLine()
-                InfoLine(S("about_storage", "Speicherbedarf"), formatBytes(groessen.first + groessen.second))
-                DividerLine()
-                InfoLine(S("about_data_size", "Datenbank"), formatBytes(groessen.first))
-                DividerLine()
-                InfoLine(S("about_files_size", "Dokumente (Dateien)"), formatBytes(groessen.second))
                 DividerLine()
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                     Text(
@@ -229,6 +246,95 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 }
             }
         }
+
+        // ------------------------------------ Datenschutz und Datensicherheit
+        item {
+            AboutSection(Icons.Outlined.Shield, S("ab_privacy_title", "Datenschutz und Datensicherheit")) {
+                FactRow(
+                    Icons.Outlined.NoAccounts,
+                    S("ab_priv_account_t", "Kein Benutzerkonto"),
+                    S("ab_priv_account_b", "Finovo funktioniert ohne Registrierung, E-Mail-Adresse oder Anmeldung.")
+                )
+                DividerLine()
+                FactRow(
+                    Icons.Outlined.CloudOff,
+                    S("ab_priv_cloud_t", "Keine Cloud-Synchronisierung"),
+                    S("ab_priv_cloud_b", "Deine Daten werden nicht auf Server übertragen. Die automatische Android-Systemsicherung ist für Finovo deaktiviert.")
+                )
+                DividerLine()
+                FactRow(
+                    Icons.Outlined.Lock,
+                    S("ab_priv_lock_t", "App-Sperre"),
+                    if (settings.appLockEnabled) {
+                        S("ab_priv_lock_on", "Aktiv. Finovo ist per PIN bzw. Biometrie geschützt und der Inhalt wird in der App-Übersicht und auf Screenshots verborgen.")
+                    } else {
+                        S("ab_priv_lock_off", "Nicht aktiv. Du kannst eine PIN und Biometrie unter Einstellungen → Sicherheit und Datenschutz einrichten.")
+                    }
+                )
+                DividerLine()
+                FactRow(
+                    Icons.Outlined.Insights,
+                    S("ab_priv_scan_t", "Erkennung auf dem Gerät"),
+                    S("ab_priv_scan_b", "Texterkennung und GiroCode-Auswertung beim Scannen von Rechnungen laufen direkt auf deinem Gerät.")
+                )
+            }
+        }
+
+        // ---------------------------------------- Lokale Datenspeicherung
+        item {
+            AboutSection(Icons.Outlined.Storage, S("ab_storage_title", "Lokale Datenspeicherung")) {
+                Text(
+                    S("ab_storage_body", "Alle Einträge liegen in einer lokalen SQLite-Datenbank (Room) im geschützten App-Speicher dieses Geräts."),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = appColors().textMuted,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp, bottom = 6.dp)
+                )
+                InfoLine(S("about_entries", "Einträge gesamt"), "$gesamt")
+                DividerLine()
+                InfoLine(S("about_storage", "Speicherbedarf"), formatBytes(groessen.first + groessen.second))
+                DividerLine()
+                InfoLine(S("about_data_size", "Datenbank"), formatBytes(groessen.first))
+                DividerLine()
+                InfoLine(S("about_files_size", "Dokumente (Dateien)"), formatBytes(groessen.second))
+            }
+        }
+
+        // ---------------------------------- Datensicherung und Wiederherstellung
+        item {
+            AboutSection(Icons.Outlined.Restore, S("ab_backup_title", "Datensicherung und Wiederherstellung")) {
+                InfoLine(
+                    str("about_last_backup", "Letztes Backup"),
+                    if (settings.lastBackupAt > 0) {
+                        Dates.full(Dates.millisToLocalDate(settings.lastBackupAt))
+                    } else str("about_no_backup", "noch keins")
+                )
+                DividerLine()
+                Text(
+                    S("ab_backup_body", "Unter Mehr → Daten erstellst du ein Backup als Datei und stellst deine Daten daraus wieder her. Die Datei wird nicht verschlüsselt – bewahre sie an einem sicheren Ort auf."),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = appColors().textMuted,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+        }
+
+        // -------------------------------------- Informationen ueber Finovo
+        item {
+            AboutSection(Icons.Outlined.Favorite, S("ab_info_title", "Informationen über Finovo")) {
+                Column(modifier = Modifier.padding(18.dp)) {
+                    Text(
+                        S("ab_info_body", "Finovo ist eine private Finanz-App für eine Person – ohne Werbung und ohne Benutzerkonto. Entwickelt wird Finovo von AZ Studio."),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        "© ${java.time.Year.now().value} " + S("az_studio", "AZ Studio"),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = appColors().textMuted
+                    )
+                }
+            }
+        }
         item {
             Spacer(Modifier.height(18.dp))
             Text(
@@ -238,13 +344,111 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp),
+                    .padding(horizontal = 32.dp)
+            )
+            Spacer(Modifier.height(28.dp))
+        }
+    }
+}
+
+/** Kopfbereich mit Logo, Slogan und Untertitel. */
+@Composable
+private fun AboutHero(version: String) {
+    val primary = MaterialTheme.colorScheme.primary
+    AppCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(primary.copy(alpha = 0.10f), Color.Transparent)
+                    )
+                )
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            FinovoLogo(iconSize = 88.dp, fontSize = 28.sp, showSlogan = false, showDivider = false)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                S("ab_slogan", "Dein Geld. Deine Kontrolle. Deine Privatsphäre."),
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                S("ab_subtitle", "Einfach. Sicher. Privat."),
+                style = MaterialTheme.typography.bodyMedium,
+                color = appColors().textMuted,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(14.dp))
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(horizontal = 14.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    version,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+        }
+    }
+}
+
+/** Abschnitt mit Icon-Ueberschrift und abgerundeter Karte. */
+@Composable
+private fun AboutSection(
+    icon: ImageVector,
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(start = 22.dp, end = 22.dp, top = 18.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(8.dp))
+        Text(
+            title,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
-            )
-        }
-        item {
-            Spacer(Modifier.height(28.dp))
+        )
+    }
+    Group(content = content)
+}
+
+@Composable
+private fun IconBadge(icon: ImageVector, tint: Color = MaterialTheme.colorScheme.primary) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(appColors().cardAlt),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+    }
+}
+
+@Composable
+private fun FactRow(icon: ImageVector, title: String, body: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        IconBadge(icon)
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleSmall)
+            Spacer(Modifier.height(2.dp))
+            Text(body, style = MaterialTheme.typography.bodySmall, color = appColors().textMuted)
         }
     }
 }
@@ -316,47 +520,93 @@ private fun InfoLine(label: String, value: String) {
     }
 }
 
+/** Fehlerprotokoll als eigenstaendige Karte (bleibt fuer andere Aufrufer erhalten). */
 @Composable
 fun ErrorLogCard() {
+    Group(modifier = Modifier.padding(vertical = 6.dp)) { ErrorLogContent() }
+}
+
+/** Systemstatus: "Alles in Ordnung" oder das vollstaendige Fehlerprotokoll. */
+@Composable
+private fun ErrorLogContent() {
     val context = LocalContext.current
     var text by remember { mutableStateOf("") }
-    LaunchedEffect(Unit) { text = CrashGuard.readLog(context) }
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = S("crash_log_head", "Fehlerprotokoll"),
-                style = MaterialTheme.typography.titleSmall
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            if (text.isBlank()) {
-                Text(
-                    text = S("crash_empty", "Kein Fehlerprotokoll vorhanden."),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+    LaunchedEffect(Unit) { text = withContext(Dispatchers.IO) { CrashGuard.readLog(context) } }
+    val ok = text.isBlank()
+    val anzahl = remember(text) { Regex("(?m)^=== ").findAll(text).count().coerceAtLeast(if (ok) 0 else 1) }
+    val statusColor = if (ok) appColors().income else MaterialTheme.colorScheme.error
+    val statusBg = if (ok) appColors().incomeContainer else MaterialTheme.colorScheme.errorContainer
+    Column(modifier = Modifier.padding(16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(statusBg),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    if (ok) Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
+                    contentDescription = null,
+                    tint = statusColor,
+                    modifier = Modifier.size(26.dp)
                 )
-            } else {
+            }
+            Spacer(Modifier.width(14.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    if (ok) S("ab_status_ok_t", "Alles in Ordnung")
+                    else S("ab_status_err_t", "Fehler gefunden"),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (ok) MaterialTheme.colorScheme.onSurface else statusColor
+                )
+                Text(
+                    if (ok) S("ab_status_ok_b", "Keine Fehler gefunden. Finovo funktioniert ordnungsgemäß.")
+                    else S("ab_status_err_b", "Einträge im Fehlerprotokoll: %1\$s. Deine Daten sind sicher.", anzahl),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = appColors().textMuted
+                )
+            }
+        }
+        if (!ok) {
+            Spacer(Modifier.height(12.dp))
+            Text(
+                S("crash_log_head", "Fehlerprotokoll"),
+                style = MaterialTheme.typography.labelLarge,
+                color = appColors().textMuted
+            )
+            Spacer(Modifier.height(6.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(appColors().cardAlt)
+                    .heightIn(max = 240.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(12.dp)
+            ) {
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 220.dp)
-                        .verticalScroll(rememberScrollState())
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace,
+                        fontSize = 11.sp
+                    )
                 )
-                Row {
-                    TextButton(onClick = { CrashGuard.copyLog(context) }) {
-                        Text(S("crash_copy", "Protokoll kopieren"))
-                    }
-                    TextButton(onClick = {
-                        CrashGuard.clearLog()
-                        text = ""
-                    }) {
-                        Text(S("crash_clear", "Protokoll löschen"))
-                    }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedButton(onClick = { CrashGuard.copyLog(context) }) {
+                    Icon(Icons.Outlined.ContentCopy, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(S("crash_copy", "Protokoll kopieren"), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+                TextButton(onClick = {
+                    CrashGuard.clearLog()
+                    text = ""
+                }) {
+                    Icon(Icons.Outlined.DeleteOutline, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text(S("crash_clear", "Protokoll löschen"), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }

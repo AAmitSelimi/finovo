@@ -1,6 +1,10 @@
 package com.finovo.app.ui.screens
 
 import android.content.Intent
+import android.media.RingtoneManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.finovo.app.notifications.ReminderTone
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings as AndroidSettings
@@ -83,6 +87,22 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
     val notificationAllowed = remember { mutableStateOf(Notify.hasPermission(context)) }
     var showPinDialog by remember { mutableStateOf<String?>(null) } // "create" | "change"
     var showCurrencyDialog by remember { mutableStateOf(false) }
+    var toneLabel by remember { mutableStateOf(ReminderTone.label(context)) }
+    val tonePicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val picked: Uri? = if (Build.VERSION.SDK_INT >= 33) {
+                result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                result.data?.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+            }
+            ReminderTone.save(context, picked)
+            toneLabel = ReminderTone.label(context)
+        }
+    }
+    val toneDialogTitle = S("tone_title", "Erinnerungston")
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -190,6 +210,26 @@ fun SettingsScreen(viewModel: AppViewModel, onBack: () -> Unit, onNavigate: (Rou
                         viewModel.setNotificationsEnabled(it)
                     },
                     modifier = Modifier.padding(horizontal = 16.dp)
+                )
+                DividerLine()
+                SettingsRow(
+                    title = toneDialogTitle,
+                    subtitle = toneLabel,
+                    emoji = "🎵",
+                    onClick = {
+                        val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER).apply {
+                            putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION)
+                            putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, toneDialogTitle)
+                            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+                            putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true)
+                            putExtra(
+                                RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI,
+                                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                            )
+                            putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, ReminderTone.pickerExistingUri(context))
+                        }
+                        runCatching { tonePicker.launch(intent) }
+                    }
                 )
                 DividerLine()
                 SettingsRow(

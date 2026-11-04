@@ -51,12 +51,13 @@ object Notify {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val bills = NotificationChannel(
-                CHANNEL_BILLS,
+                ReminderTone.channelId(context),
                 S(context, "rechnungen_erinnerungen", "Rechnungen & Erinnerungen"),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = S(context, "erinnerungen_an_faellige_rechnungen", "Erinnerungen an fällige Rechnungen")
                 enableVibration(true)
+                setSound(ReminderTone.soundUri(context), ReminderTone.audioAttributes)
             }
             val budget = NotificationChannel(
                 CHANNEL_BUDGET,
@@ -112,15 +113,25 @@ object Notify {
             PendingIntent.FLAG_UPDATE_CURRENT or pendingIntentFlags()
         )
 
-        val builder = NotificationCompat.Builder(context, channel)
+        // Der Erinnerungskanal traegt den gewaehlten Ton und kann daher eine
+        // neue Kennung haben (siehe ReminderTone).
+        val isReminder = channel == CHANNEL_BILLS
+        val channelId = if (isReminder) ReminderTone.channelId(context) else channel
+        val builder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.ic_stat_euro)
             .setContentTitle(title)
             .setContentText(message)
             .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
             .setContentIntent(openPending)
+        if (isReminder) {
+            // Vor Android 8 gilt der Ton je Benachrichtigung statt je Kanal.
+            builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE or NotificationCompat.DEFAULT_LIGHTS)
+            builder.setSound(ReminderTone.soundUri(context))
+        } else {
+            builder.setDefaults(NotificationCompat.DEFAULT_ALL)
+        }
 
         if (addMarkPaidAction && billId != null && billId > 0) {
             val paidIntent = Intent(context, ActionReceiver::class.java).apply {
