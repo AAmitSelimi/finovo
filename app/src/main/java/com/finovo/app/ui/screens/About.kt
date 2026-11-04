@@ -318,23 +318,6 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
             }
         }
 
-        // -------------------------------------- Informationen ueber Finovo
-        item {
-            AboutSection(Icons.Outlined.Favorite, S("ab_info_title", "Informationen über Finovo")) {
-                Column(modifier = Modifier.padding(18.dp)) {
-                    Text(
-                        S("ab_info_body", "Finovo ist eine private Finanz-App für eine Person – ohne Werbung und ohne Benutzerkonto. Entwickelt wird Finovo von AZ Studio."),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Spacer(Modifier.height(12.dp))
-                    Text(
-                        "© ${java.time.Year.now().value} " + S("az_studio", "AZ Studio"),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = appColors().textMuted
-                    )
-                }
-            }
-        }
         item {
             Spacer(Modifier.height(18.dp))
             Text(
@@ -346,6 +329,70 @@ fun AboutScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
             )
+        }
+
+        // ------------------------- Über Finovo (aufklappbar, ganz unten)
+        item {
+            Spacer(Modifier.height(16.dp))
+            ExpandableSection(
+                title = S("acc_about_title", "Über Finovo"),
+                icon = Icons.Outlined.Favorite,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    S("acc_about_head", "Finovo – Dein Geld. Deine Regeln."),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    S("acc_about_body", "Dein persönlicher Finanzbegleiter – entwickelt, um die Verwaltung deines Geldes einfach, transparent und sicher zu machen."),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    S("acc_about_principles", "Unsere Grundsätze:"),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(6.dp))
+                listOf(
+                    S("acc_p1", "Datenschutz von Anfang an"),
+                    S("acc_p2", "Keine Registrierung erforderlich"),
+                    S("acc_p3", "Keine Werbung"),
+                    S("acc_p4", "Keine verpflichtende Cloud-Verbindung"),
+                    S("acc_p5", "Lokale Datenspeicherung")
+                ).forEach { p ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 3.dp)
+                    ) {
+                        Icon(
+                            Icons.Outlined.CheckCircle,
+                            contentDescription = null,
+                            tint = appColors().income,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(Modifier.width(10.dp))
+                        Text(p, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+                DividerLine()
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    S("acc_dev", "Entwickelt von AZ Studio"),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    S("about_version_value", "Version %1\$s", paket?.versionName ?: "—") +
+                        " · © ${java.time.Year.now().value} " + S("az_studio", "AZ Studio"),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = appColors().textMuted
+                )
+            }
             Spacer(Modifier.height(28.dp))
         }
     }

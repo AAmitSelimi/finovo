@@ -1138,6 +1138,7 @@ fun BottomSheetContainer(
         sheetState = state,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = if (appColors().isDark) androidx.compose.ui.graphics.Color(0xFF081231) else MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         dragHandle = {
             Box(
                 modifier = Modifier

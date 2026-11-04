@@ -49,7 +49,7 @@ fun FinovoWordmark(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 30.sp
 ) {
-    val dark = isSystemInDarkTheme()
+    val dark = com.finovo.app.ui.theme.appColors().isDark
     val navy = if (dark) NavyDark else NavyLight
     val blue = if (dark) BlueDark else BlueLight
     val style = MaterialTheme.typography.headlineSmall.copy(
@@ -69,7 +69,7 @@ fun FinovoSlogan(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 14.sp
 ) {
-    val dark = isSystemInDarkTheme()
+    val dark = com.finovo.app.ui.theme.appColors().isDark
     Text(
         text = S("app_tagline", "Deine Finanzen. Einfach. Privat."),
         style = MaterialTheme.typography.bodyMedium.copy(fontSize = fontSize),
@@ -87,7 +87,7 @@ fun FinovoDivider(
     modifier: Modifier = Modifier,
     width: Dp = 64.dp
 ) {
-    val dark = isSystemInDarkTheme()
+    val dark = com.finovo.app.ui.theme.appColors().isDark
     Box(
         modifier = modifier
             .size(width = width, height = 4.dp)

@@ -1,5 +1,7 @@
 package com.finovo.app
 
+import org.junit.Assert.assertTrue
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
@@ -7,6 +9,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
@@ -155,6 +159,27 @@ class WeitereScreensSmokeTest {
         scrolleUndWarte("Total entries")
         scrolleUndWarte("Backup and restore")
         scrolleUndWarte("Saved bills")
+    }
+
+    @Test
+    fun ueberFinovoAkkordeonKlapptAufUndZu() {
+        baueAuf(false) { AboutScreen(it) {} }
+        val kopf = hasContentDescription("About Finovo")
+        compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(kopf)
+        // Startet eingeklappt: Grundsaetze sind noch nicht zu sehen
+        assertTrue(compose.onAllNodesWithText("Privacy by design").fetchSemanticsNodes().isEmpty())
+        compose.onNode(kopf).performClick()
+        compose.mainClock.advanceTimeBy(600)
+        compose.waitForIdle()
+        compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(hasText("Privacy by design"))
+        compose.onNodeWithText("Privacy by design").assertIsDisplayed()
+        compose.onNodeWithText("Finovo – Your Money. Your Rules.").assertExists()
+        // Erneut tippen klappt wieder zu
+        compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(kopf)
+        compose.onNode(kopf).performClick()
+        compose.mainClock.advanceTimeBy(600)
+        compose.waitForIdle()
+        assertTrue(compose.onAllNodesWithText("Privacy by design").fetchSemanticsNodes().isEmpty())
     }
 
     /** Scrollt die Liste zu [text] und wartet, bis er sichtbar ist. */

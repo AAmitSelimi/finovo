@@ -1997,4 +1997,18 @@
     <string name="sp_feat_3">Tasarruf hedefleri ve bütçeler</string>
     <string name="sp_feat_4">Analizler ve raporlar</string>
     <string name="sp_feat_5">Çevrimdışı ve gizlilik</string>
+    <string name="acc_expanded">Genişletildi</string>
+    <string name="acc_collapsed">Daraltıldı</string>
+    <string name="acc_expand">Genişlet</string>
+    <string name="acc_collapse">Daralt</string>
+    <string name="acc_about_title">Finovo hakkında</string>
+    <string name="acc_about_head">Finovo – Paran. Kuralların.</string>
+    <string name="acc_about_body">Parayı yönetmeyi basit, şeffaf ve güvenli hale getirmek için tasarlanmış kişisel finans yardımcın.</string>
+    <string name="acc_about_principles">İlkelerimiz:</string>
+    <string name="acc_p1">Tasarımdan itibaren gizlilik</string>
+    <string name="acc_p2">Kayıt gerekmez</string>
+    <string name="acc_p3">Reklam yok</string>
+    <string name="acc_p4">Zorunlu bulut bağlantısı yok</string>
+    <string name="acc_p5">Yerel veri depolama</string>
+    <string name="acc_dev">AZ Studio tarafından geliştirildi</string>
 </resources>

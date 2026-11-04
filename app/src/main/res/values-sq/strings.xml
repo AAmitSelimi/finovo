@@ -1998,4 +1998,18 @@ Krijuar më %1$s – offline në pajisje.</string>
     <string name="sp_feat_3">Objektiva kursimi &amp; buxhete</string>
     <string name="sp_feat_4">Analiza &amp; raporte</string>
     <string name="sp_feat_5">Offline &amp; privatësi</string>
+    <string name="acc_expanded">E zgjeruar</string>
+    <string name="acc_collapsed">E mbledhur</string>
+    <string name="acc_expand">Zgjero</string>
+    <string name="acc_collapse">Mblidh</string>
+    <string name="acc_about_title">Rreth Finovo</string>
+    <string name="acc_about_head">Finovo – Paratë e tua. Rregullat e tua.</string>
+    <string name="acc_about_body">Shoqëruesi yt personal financiar, i krijuar për ta bërë menaxhimin e parave të thjeshtë, transparent dhe të sigurt.</string>
+    <string name="acc_about_principles">Parimet tona:</string>
+    <string name="acc_p1">Privatësi që në fillim</string>
+    <string name="acc_p2">Nuk kërkohet regjistrim</string>
+    <string name="acc_p3">Pa reklama</string>
+    <string name="acc_p4">Pa lidhje të detyrueshme me cloud</string>
+    <string name="acc_p5">Ruajtje lokale e të dhënave</string>
+    <string name="acc_dev">Zhvilluar nga AZ Studio</string>
 </resources>

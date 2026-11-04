@@ -1998,4 +1998,18 @@ Created on %1$s – offline on this device.</string>
     <string name="sp_feat_3">Savings goals &amp; budgets</string>
     <string name="sp_feat_4">Analytics &amp; reports</string>
     <string name="sp_feat_5">Offline &amp; privacy</string>
+    <string name="acc_expanded">Expanded</string>
+    <string name="acc_collapsed">Collapsed</string>
+    <string name="acc_expand">Expand</string>
+    <string name="acc_collapse">Collapse</string>
+    <string name="acc_about_title">About Finovo</string>
+    <string name="acc_about_head">Finovo – Your Money. Your Rules.</string>
+    <string name="acc_about_body">Your personal finance companion, designed to make managing money simple, transparent and secure.</string>
+    <string name="acc_about_principles">Our principles:</string>
+    <string name="acc_p1">Privacy by design</string>
+    <string name="acc_p2">No registration required</string>
+    <string name="acc_p3">No advertising</string>
+    <string name="acc_p4">No mandatory cloud connection</string>
+    <string name="acc_p5">Local data storage</string>
+    <string name="acc_dev">Developed by AZ Studio</string>
 </resources>

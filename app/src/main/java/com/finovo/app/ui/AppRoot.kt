@@ -175,7 +175,10 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
         com.finovo.app.ui.theme.FinovoBackground {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = Color.Transparent
+            color = Color.Transparent,
+            // Ohne explizite Farbe faellt die Schrift auf einer transparenten
+            // Flaeche auf Schwarz zurueck - im Dark Mode unlesbar.
+            contentColor = MaterialTheme.colorScheme.onBackground
         ) {
             if (splashVisible) {
                 SplashScreen { splashVisible = false }
@@ -199,6 +202,7 @@ fun AppRoot(viewModel: AppViewModel, onBiometric: () -> Unit, onDeviceCredential
             } else {
                 Scaffold(
                     containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onBackground,
                     snackbarHost = { SnackbarHost(snackbarHostState) },
                     bottomBar = {
                         Box(

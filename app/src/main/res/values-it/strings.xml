@@ -1998,4 +1998,18 @@ Creato il %1$s – offline sul dispositivo.</string>
     <string name="sp_feat_3">Obiettivi di risparmio e budget</string>
     <string name="sp_feat_4">Analisi e report</string>
     <string name="sp_feat_5">Offline e privacy</string>
+    <string name="acc_expanded">Espanso</string>
+    <string name="acc_collapsed">Compresso</string>
+    <string name="acc_expand">Espandi</string>
+    <string name="acc_collapse">Comprimi</string>
+    <string name="acc_about_title">Informazioni su Finovo</string>
+    <string name="acc_about_head">Finovo – I tuoi soldi. Le tue regole.</string>
+    <string name="acc_about_body">Il tuo compagno finanziario personale, pensato per rendere la gestione del denaro semplice, trasparente e sicura.</string>
+    <string name="acc_about_principles">I nostri principi:</string>
+    <string name="acc_p1">Privacy by design</string>
+    <string name="acc_p2">Nessuna registrazione richiesta</string>
+    <string name="acc_p3">Nessuna pubblicità</string>
+    <string name="acc_p4">Nessuna connessione cloud obbligatoria</string>
+    <string name="acc_p5">Archiviazione locale dei dati</string>
+    <string name="acc_dev">Sviluppato da AZ Studio</string>
 </resources>

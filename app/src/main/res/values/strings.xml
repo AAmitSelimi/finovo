@@ -1998,4 +1998,18 @@ Erstellt am %1$s – offline auf dem Gerät.</string>
     <string name="sp_feat_3">Sparziele &amp; Budgets</string>
     <string name="sp_feat_4">Analysen &amp; Berichte</string>
     <string name="sp_feat_5">Offline &amp; Datenschutz</string>
+    <string name="acc_expanded">Ausgeklappt</string>
+    <string name="acc_collapsed">Eingeklappt</string>
+    <string name="acc_expand">Ausklappen</string>
+    <string name="acc_collapse">Einklappen</string>
+    <string name="acc_about_title">Über Finovo</string>
+    <string name="acc_about_head">Finovo – Dein Geld. Deine Regeln.</string>
+    <string name="acc_about_body">Dein persönlicher Finanzbegleiter – entwickelt, um die Verwaltung deines Geldes einfach, transparent und sicher zu machen.</string>
+    <string name="acc_about_principles">Unsere Grundsätze:</string>
+    <string name="acc_p1">Datenschutz von Anfang an</string>
+    <string name="acc_p2">Keine Registrierung erforderlich</string>
+    <string name="acc_p3">Keine Werbung</string>
+    <string name="acc_p4">Keine verpflichtende Cloud-Verbindung</string>
+    <string name="acc_p5">Lokale Datenspeicherung</string>
+    <string name="acc_dev">Entwickelt von AZ Studio</string>
 </resources>

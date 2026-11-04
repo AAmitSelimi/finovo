@@ -5,6 +5,13 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -187,6 +194,87 @@ fun Modifier.scanCorners(): Modifier {
         corner(size.width - inset, inset, -1f, 1f)
         corner(inset, size.height - inset, 1f, -1f)
         corner(size.width - inset, size.height - inset, -1f, -1f)
+    }
+}
+
+/**
+ * Wiederverwendbares Akkordeon im Premium-Design: kompakter Kopf mit Icon,
+ * Titel und Pfeil; Inhalt klappt animiert auf und zu. Startet eingeklappt.
+ * Barrierefrei: ganzer Kopf ist ein Button (mind. 56 dp) mit Zustandsansage.
+ */
+@Composable
+fun ExpandableSection(
+    title: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    initiallyExpanded: Boolean = false,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    var expanded by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(initiallyExpanded) }
+    val rotation by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        animationSpec = tween(250),
+        label = "chevron"
+    )
+    val stateText = if (expanded) S("acc_expanded", "Ausgeklappt") else S("acc_collapsed", "Eingeklappt")
+    val actionText = if (expanded) S("acc_collapse", "Einklappen") else S("acc_expand", "Ausklappen")
+    AppCard(modifier = modifier) {
+        Column {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp)
+                    .clickable(
+                        role = Role.Button,
+                        onClickLabel = actionText,
+                        onClick = { expanded = !expanded }
+                    )
+                    .semantics(mergeDescendants = true) {
+                        contentDescription = title
+                        stateDescription = stateText
+                    }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(RoundedCornerShape(11.dp))
+                        .background(appColors().glow.copy(alpha = if (appColors().isDark) 0.22f else 0.10f))
+                        .border(1.dp, appColors().glow.copy(alpha = 0.4f), RoundedCornerShape(11.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                }
+                Spacer(Modifier.width(12.dp))
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = appColors().textMuted,
+                    modifier = Modifier.size(26.dp).rotate(rotation)
+                )
+            }
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(animationSpec = tween(280)) + fadeIn(tween(280)),
+                exit = shrinkVertically(animationSpec = tween(240)) + fadeOut(tween(200))
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    content = content
+                )
+            }
+        }
     }
 }
 
