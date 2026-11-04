@@ -17,6 +17,10 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.finovo.app.backup.Backup
 import com.finovo.app.data.BillEntity
@@ -78,6 +82,7 @@ class DatenModulTest {
         val vm = AppViewModel(app)
         baueAuf { DataScreen(vm, {}) }
         // Die Liste wird nur mit Inhalt gezeichnet - genau hier kann es krachen.
+        scrolleZu(text("de", "loeschen", "Löschen"))
         assertTrue(compose.onAllNodesWithText(text("de", "loeschen", "Löschen")).fetchSemanticsNodes().isNotEmpty())
         assertTrue(
             compose.onAllNodesWithText(text("de", "wiederherstellen", "Wiederherstellen")).fetchSemanticsNodes().isNotEmpty()
@@ -93,6 +98,7 @@ class DatenModulTest {
         val vm = AppViewModel(app)
         baueAuf { DataScreen(vm, {}) }
         // Untertitel "Letztes Backup: ..." ist jetzt aktiv
+        scrolleZu(text("de", "loeschen", "Löschen"))
         assertTrue(compose.onAllNodesWithText(text("de", "loeschen", "Löschen")).fetchSemanticsNodes().isNotEmpty())
     }
 
@@ -370,6 +376,15 @@ class DatenModulTest {
      * umschlagen, damit die Texte wirklich in dieser Sprache geprueft werden -
      * die Testumgebung startet sonst auf Englisch.
      */
+    /** Scrollt die Liste des Bildschirms zu [text], damit die Zeile aufgebaut wird. */
+    private fun scrolleZu(text: String) {
+        compose.waitForIdle()
+        runCatching {
+            compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(hasText(text))
+        }
+        compose.waitForIdle()
+    }
+
     private fun baueAuf(sprache: String = "de", inhalt: @Composable (AppViewModel) -> Unit) {
         val vm = AppViewModel(app())
         var generation by mutableStateOf(0)
@@ -440,6 +455,8 @@ class DatenModulTest {
         compose.waitForIdle()
 
         // Knopf "Wiederherstellen" der ersten Backup-Zeile -> Dialog
+        // (die Liste beginnt unterhalb des Kopfbereichs - zuerst dorthin scrollen)
+        scrolleZu(text(code, "wiederherstellen", "Wiederherstellen"))
         compose.onAllNodesWithText(text(code, "wiederherstellen", "Wiederherstellen"))[0]
             .performScrollTo()
             .performClick()
