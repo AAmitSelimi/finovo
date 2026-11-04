@@ -5,6 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.hasText
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.finovo.app.data.CategoryType
 import com.finovo.app.data.ExpenseEntity
@@ -138,12 +142,38 @@ class WeitereScreensSmokeTest {
     @Test
     fun ueberZeigtEchteAppInformationen() {
         baueAuf(true) { AboutScreen(it) {} }
-        // Robolectric meldet englische Texte
-        warteAufText("App information")
-        warteAufText("Version")
-        warteAufText("Total entries")
-        warteAufText("Permissions")
-        warteAufText("Installed on")
+        // Robolectric meldet englische Texte. Die Seite ist lang - jeweils dorthin scrollen.
+        scrolleUndWarte("Your money. Your control. Your privacy.")
+        scrolleUndWarte("Your financial overview")
+        scrolleUndWarte("Recorded expenses")
+        scrolleUndWarte("System status")
+        scrolleUndWarte("App information")
+        scrolleUndWarte("Current app version")
+        scrolleUndWarte("Permissions")
+        scrolleUndWarte("Installed on")
+        scrolleUndWarte("Privacy and data security")
+        scrolleUndWarte("Total entries")
+        scrolleUndWarte("Backup and restore")
+        scrolleUndWarte("Saved bills")
+    }
+
+    /** Scrollt die Liste zu [text] und wartet, bis er sichtbar ist. */
+    private fun scrolleUndWarte(text: String, dauerMs: Long = 15_000) {
+        val ende = System.currentTimeMillis() + dauerMs
+        var letzterFehler: Throwable? = null
+        while (System.currentTimeMillis() < ende) {
+            compose.waitForIdle()
+            try {
+                compose.onAllNodes(hasScrollAction()).onFirst().performScrollToNode(hasText(text))
+                compose.waitForIdle()
+                compose.onNodeWithText(text).assertIsDisplayed()
+                return
+            } catch (e: Throwable) {
+                letzterFehler = e
+                Thread.sleep(40)
+            }
+        }
+        throw AssertionError("Text '$text' wurde nicht angezeigt", letzterFehler)
     }
 
     private fun baueAuf(mitDaten: Boolean, inhalt: @Composable (AppViewModel) -> Unit) {
