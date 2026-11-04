@@ -146,6 +146,25 @@ fun AppCard(
     }
 }
 
+/**
+ * Premium-Flaeche fuer selbst gezeichnete Karten: schneidet auf [shape] zu,
+ * fuellt mit dem Karten-Verlauf und zeichnet den leuchtenden Rand.
+ */
+@Composable
+fun Modifier.premiumSurface(shape: androidx.compose.ui.graphics.Shape = RoundedCornerShape(20.dp)): Modifier {
+    val c = appColors()
+    return this
+        .clip(shape)
+        .background(Brush.verticalGradient(listOf(c.cardTop, c.card)))
+        .border(
+            1.dp,
+            if (c.isDark) Brush.linearGradient(
+                listOf(c.cardBorder.copy(alpha = 0.85f), c.cardBorder.copy(alpha = 0.18f), c.cyan.copy(alpha = 0.25f))
+            ) else Brush.linearGradient(listOf(c.cardBorder, c.cardBorder)),
+            shape
+        )
+}
+
 /** Leuchtender Verlauf fuer Hauptaktionen (elektrisches Blau). */
 @Composable
 fun primaryGradient(): Brush {
@@ -775,8 +794,13 @@ fun CategoryBadge(emoji: String, modifier: Modifier = Modifier, size: Dp = 42.dp
     Box(
         modifier = modifier
             .size(size)
-            .clip(CircleShape)
-            .background(appColors().cardAlt),
+            .clip(RoundedCornerShape(size * 0.3f))
+            .background(
+                Brush.linearGradient(
+                    listOf(appColors().cardAlt, appColors().glow.copy(alpha = if (appColors().isDark) 0.22f else 0.10f))
+                )
+            )
+            .border(1.dp, appColors().glow.copy(alpha = if (appColors().isDark) 0.35f else 0.15f), RoundedCornerShape(size * 0.3f)),
         contentAlignment = Alignment.Center
     ) {
         Text(emoji, fontSize = (size.value * 0.45).sp)
@@ -799,15 +823,25 @@ fun ProgressBar(
         animationSpec = tween(500),
         label = S("progress", "progress")
     )
-    LinearProgressIndicator(
-        progress = { animated },
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(10.dp)
-            .clip(RoundedCornerShape(5.dp)),
-        color = color,
-        trackColor = trackColor
-    )
+            .clip(RoundedCornerShape(5.dp))
+            .background(trackColor)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(animated)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(5.dp))
+                .background(
+                    Brush.horizontalGradient(
+                        listOf(color, androidx.compose.ui.graphics.lerp(color, Color.White, 0.25f))
+                    )
+                )
+        )
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -886,7 +920,11 @@ fun SwitchRow(
             enabled = enabled,
             colors = SwitchDefaults.colors(
                 checkedThumbColor = Color.White,
-                checkedTrackColor = MaterialTheme.colorScheme.primary
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                checkedBorderColor = appColors().cyan.copy(alpha = 0.6f),
+                uncheckedTrackColor = appColors().cardAlt,
+                uncheckedBorderColor = appColors().cardBorder,
+                uncheckedThumbColor = appColors().textMuted
             )
         )
     }
@@ -916,7 +954,12 @@ fun SettingsRow(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(appColors().cardAlt),
+                    .background(
+                        Brush.linearGradient(
+                            listOf(appColors().cardAlt, appColors().glow.copy(alpha = if (appColors().isDark) 0.22f else 0.10f))
+                        )
+                    )
+                    .border(1.dp, appColors().glow.copy(alpha = if (appColors().isDark) 0.35f else 0.15f), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 if (icon != null) {

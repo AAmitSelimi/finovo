@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Calculate
@@ -415,18 +418,34 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
             }
 
             item {
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    S("offline_footer", "Finovo funktioniert vollständig offline. Alle Daten bleiben auf diesem Gerät."),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = appColors().textMuted,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp, vertical = 10.dp),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-                )
+                Spacer(Modifier.height(14.dp))
+                Group {
+                    Row(
+                        modifier = Modifier.padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(34.dp)
+                                .clip(CircleShape)
+                                .background(appColors().income.copy(alpha = 0.18f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                tint = appColors().income,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            S("offline_footer", "Finovo funktioniert vollständig offline. Alle Daten bleiben auf diesem Gerät."),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = appColors().textMuted
+                        )
+                    }
+                }
             }
         }
     }
@@ -452,9 +471,9 @@ fun MoreScreen(viewModel: AppViewModel, onNavigate: (Route) -> Unit) {
 internal fun GroupTitle(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
-        style = MaterialTheme.typography.labelLarge,
-        color = appColors().textMuted,
-        modifier = modifier.padding(horizontal = 22.dp, vertical = 12.dp),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onBackground,
+        modifier = modifier.padding(start = 22.dp, end = 22.dp, top = 18.dp, bottom = 8.dp),
     maxLines = 1,
     overflow = TextOverflow.Ellipsis
     )
@@ -475,8 +494,9 @@ internal fun DividerLine(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .padding(horizontal = 14.dp)
             .height(1.dp)
-            .background(appColors().divider)
+            .background(appColors().divider.copy(alpha = if (appColors().isDark) 0.7f else 1f))
     )
 }
 
@@ -489,17 +509,21 @@ private fun QuickTile(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(appColors().card)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                androidx.compose.ui.graphics.Brush.verticalGradient(listOf(appColors().cardTop, appColors().card))
+            )
+            .border(1.dp, appColors().cardBorder.copy(alpha = if (appColors().isDark) 0.6f else 1f), RoundedCornerShape(20.dp))
             .clickable(onClick = onClick)
             .padding(vertical = 16.dp, horizontal = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier
-                .size(38.dp)
+                .size(40.dp)
                 .clip(RoundedCornerShape(13.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(appColors().glow.copy(alpha = if (appColors().isDark) 0.22f else 0.10f))
+                .border(1.dp, appColors().glow.copy(alpha = 0.4f), RoundedCornerShape(13.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(emoji, style = MaterialTheme.typography.titleSmall,

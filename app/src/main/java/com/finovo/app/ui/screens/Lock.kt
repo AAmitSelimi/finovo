@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.border
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -115,6 +116,7 @@ fun LockScreen(
         )
         Spacer(Modifier.height(14.dp))
         Text(S("lock_welcome", "Willkommen zurück bei Finovo"), style = MaterialTheme.typography.headlineSmall,
+        textAlign = TextAlign.Center,
         maxLines = 2,
         overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.height(6.dp))
@@ -126,19 +128,40 @@ fun LockScreen(
         Spacer(Modifier.height(28.dp))
 
         if (biometricEnabled) {
+            // Leuchtender Fingerabdruck-Ring wie im Premium-Design
+            val glow = appColors().glow
+            val cyan = appColors().cyan
             Box(
                 modifier = Modifier
-                    .size(88.dp)
+                    .size(132.dp)
+                    .drawBehind {
+                        drawCircle(
+                            androidx.compose.ui.graphics.Brush.radialGradient(
+                                listOf(glow.copy(alpha = 0.45f), Color.Transparent)
+                            ),
+                            radius = size.minDimension / 2f
+                        )
+                    }
+                    .padding(14.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .background(
+                        androidx.compose.ui.graphics.Brush.radialGradient(
+                            listOf(glow.copy(alpha = 0.35f), appColors().card)
+                        )
+                    )
+                    .border(
+                        2.dp,
+                        androidx.compose.ui.graphics.Brush.sweepGradient(listOf(glow, cyan, glow)),
+                        CircleShape
+                    )
                     .clickable(onClick = onBiometric),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.Fingerprint,
                     contentDescription = S("mit_fingerabdruck_entsperren", "Mit Fingerabdruck oder Gesicht entsperren"),
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(44.dp)
+                    tint = if (appColors().isDark) Color.White else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(56.dp)
                 )
             }
             Spacer(Modifier.height(10.dp))
@@ -173,7 +196,7 @@ fun LockScreen(
                         .size(16.dp)
                         .clip(CircleShape)
                         .background(
-                            if (filled) MaterialTheme.colorScheme.primary else Color.Transparent
+                            if (filled) appColors().cyan else Color.Transparent
                         )
                         .border(
                             2.dp,
@@ -251,13 +274,18 @@ fun LockScreen(
                                 modifier = Modifier
                                     .size(72.dp)
                                     .clip(CircleShape)
-                                    .background(appColors().cardAlt)
+                                    .background(
+                                        androidx.compose.ui.graphics.Brush.verticalGradient(
+                                            listOf(appColors().cardTop, appColors().card)
+                                        )
+                                    )
+                                    .border(1.dp, appColors().cardBorder.copy(alpha = 0.6f), CircleShape)
                                     .clickable {
                                         if (entered.length < 8) entered += key
                                     },
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(key, fontSize = 24.sp)
+                                Text(key, fontSize = 24.sp, color = MaterialTheme.colorScheme.onSurface)
                             }
                         }
                     }

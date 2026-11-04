@@ -101,8 +101,7 @@ fun BudgetScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
-                    .background(appColors().card)
+                    .premiumSurface(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
                     .padding(18.dp)
             ) {
                 Row(
@@ -182,8 +181,7 @@ fun BudgetScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
-                    .background(appColors().card)
+                    .premiumSurface(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
                     .padding(horizontal = 16.dp, vertical = 6.dp)
             ) {
                 SwitchRow(

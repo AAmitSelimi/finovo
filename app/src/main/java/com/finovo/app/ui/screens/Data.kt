@@ -1,5 +1,7 @@
 package com.finovo.app.ui.screens
 
+import androidx.compose.material.icons.filled.CloudDone
+import androidx.compose.ui.draw.drawBehind
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -146,6 +148,43 @@ fun DataScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                 subtitle = S("backup_wiederherstellen_export_lokal_o", "Backup, Wiederherstellen & Export – lokal, ohne Cloud"),
                 onBack = onBack
             )
+        }
+
+        // Premium-Kopf: leuchtende Wolke mit Haken
+        item {
+            val glow = appColors().glow
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                androidx.compose.foundation.layout.Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .drawBehind {
+                            drawCircle(
+                                androidx.compose.ui.graphics.Brush.radialGradient(
+                                    listOf(glow.copy(alpha = 0.40f), androidx.compose.ui.graphics.Color.Transparent)
+                                )
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        Icons.Default.CloudDone,
+                        contentDescription = null,
+                        tint = glow,
+                        modifier = Modifier.size(78.dp)
+                    )
+                }
+                Text(
+                    S("ds_backup_hero", "Sichere deine Daten lokal auf deinem Gerät."),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 32.dp)
+                )
+            }
         }
 
         item {

@@ -1,6 +1,7 @@
 package com.finovo.app.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -372,25 +373,34 @@ private fun SchnellFrage(
                 style = MaterialTheme.typography.bodySmall
             )
         },
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(50),
+        colors = FilterChipDefaults.filterChipColors(
+            containerColor = appColors().card,
+            labelColor = MaterialTheme.colorScheme.onSurface
+        ),
+        border = FilterChipDefaults.filterChipBorder(
+            enabled = true,
+            selected = false,
+            borderColor = appColors().glow.copy(alpha = 0.5f)
+        )
     )
 }
 
 @Composable
 private fun NutzerBlase(text: String) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-        Card(
-            shape = RoundedCornerShape(14.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier.widthIn(max = 300.dp)
+        // Nutzer-Nachricht als leuchtende Verlaufs-Blase
+        Box(
+            modifier = Modifier
+                .widthIn(max = 300.dp)
+                .clip(RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 6.dp))
+                .background(com.finovo.app.ui.components.primaryGradient())
         ) {
             Text(
                 text = text,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = androidx.compose.ui.graphics.Color.White
             )
         }
     }
@@ -401,8 +411,9 @@ private fun KiBlase(nachricht: ChatMessage) {
     val farben = appColors()
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
         Card(
-            shape = RoundedCornerShape(14.dp),
+            shape = RoundedCornerShape(topStart = 6.dp, topEnd = 18.dp, bottomStart = 18.dp, bottomEnd = 18.dp),
             colors = CardDefaults.cardColors(containerColor = farben.card),
+            border = androidx.compose.foundation.BorderStroke(1.dp, farben.cardBorder.copy(alpha = if (farben.isDark) 0.6f else 1f)),
             modifier = Modifier.widthIn(max = 340.dp)
         ) {
             Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {

@@ -170,8 +170,7 @@ fun CategoriesScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = (20 + zeile.ebene * 18).dp, end = 20.dp, top = 4.dp, bottom = 4.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(appColors().card)
+                            .premiumSurface(RoundedCornerShape(16.dp))
                             .padding(horizontal = 14.dp, vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {

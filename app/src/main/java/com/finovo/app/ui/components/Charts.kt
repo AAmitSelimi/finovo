@@ -101,8 +101,8 @@ fun DonutChart(
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val strokeWidth = 30.dp.toPx()
-            val diameter = min(size.width, size.height) - strokeWidth
+            val strokeWidth = 24.dp.toPx()
+            val diameter = min(size.width, size.height) - strokeWidth * 1.5f
             val topLeft = Offset(
                 (size.width - diameter) / 2f,
                 (size.height - diameter) / 2f
@@ -111,8 +111,19 @@ fun DonutChart(
             val sum = totals.sumOf { it.cents }.coerceAtLeast(1)
             totals.forEachIndexed { index, total ->
                 val sweep = (total.cents.toFloat() / sum.toFloat()) * 360f
+                val segColor = palette[index % palette.size]
+                // Leuchtschein
                 drawArc(
-                    color = palette[index % palette.size],
+                    color = segColor.copy(alpha = 0.22f),
+                    startAngle = startAngle,
+                    sweepAngle = sweep - 1.6f,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = Size(diameter, diameter),
+                    style = Stroke(width = strokeWidth * 1.45f)
+                )
+                drawArc(
+                    color = segColor,
                     startAngle = startAngle,
                     sweepAngle = sweep - 1.6f,
                     useCenter = false,
@@ -196,7 +207,7 @@ fun MonthlyBarsChart(
     series: List<MonthPoint>,
     modifier: Modifier = Modifier,
     incomeColor: Color = appColors().income,
-    expenseColor: Color = appColors().expense
+    expenseColor: Color = appColors().glow
 ) {
     if (series.isEmpty()) return
     val max = series.maxOf { maxOf(it.incomeCents, it.expenseCents) }.coerceAtLeast(100)
@@ -271,9 +282,16 @@ private fun Bar(value: Float, color: Color, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .fillMaxSize(fraction = safe)
         ) {
+            // dezenter Leuchtschein hinter dem Balken
+            drawRoundRect(
+                color = color.copy(alpha = 0.22f),
+                topLeft = Offset(-3.dp.toPx(), -3.dp.toPx()),
+                size = Size(size.width + 6.dp.toPx(), size.height + 3.dp.toPx()),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(size.minDimension, size.minDimension)
+            )
             drawRoundRect(
                 brush = Brush.verticalGradient(
-                    listOf(color, color.copy(alpha = 0.75f))
+                    listOf(androidx.compose.ui.graphics.lerp(color, Color.White, 0.3f), color, color.copy(alpha = 0.55f))
                 ),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(
                     size.minDimension / 2,
@@ -324,7 +342,10 @@ fun HorizontalBar(
             )
             if (safe > 0f) {
                 drawRoundRect(
-                    color = color,
+                    brush = Brush.horizontalGradient(
+                        listOf(color, androidx.compose.ui.graphics.lerp(color, Color.White, 0.25f)),
+                        endX = size.width * safe
+                    ),
                     size = Size(size.width * safe, size.height),
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(
                         size.minDimension / 2,

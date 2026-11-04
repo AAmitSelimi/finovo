@@ -1992,4 +1992,5 @@ Created on %1$s – offline on this device.</string>
     <string name="ds_vs_prev">vs. last month</string>
     <string name="ds_hide">Hide amount</string>
     <string name="ds_show">Show amount</string>
+    <string name="ds_backup_hero">Keep your data safe, locally on your device.</string>
 </resources>

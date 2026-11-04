@@ -1,5 +1,6 @@
 package com.finovo.app.ui.screens
 
+import com.finovo.app.ui.components.premiumSurface
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -652,8 +653,7 @@ private fun KpiGrid(result: com.finovo.app.util.AnalyticsResult, symbol: String)
         Column(
             modifier = Modifier
                 .weight(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(appColors().card)
+                .premiumSurface(RoundedCornerShape(16.dp))
                 .padding(14.dp)
         ) {
             Text(S("sparquote", "Sparquote"), style = MaterialTheme.typography.bodySmall, color = appColors().textMuted)
@@ -685,8 +685,7 @@ private fun ResultStat(
 ) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(appColors().card)
+            .premiumSurface(RoundedCornerShape(16.dp))
             .padding(14.dp)
     ) {
         Text(
@@ -760,8 +759,7 @@ private fun Card(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(appColors().card)
+            .premiumSurface(RoundedCornerShape(20.dp))
             .padding(16.dp)
     ) {
         Text(title, style = MaterialTheme.typography.titleSmall,
@@ -791,8 +789,7 @@ private fun ChartCard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-            .background(appColors().card)
+            .premiumSurface(RoundedCornerShape(20.dp))
             .padding(16.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

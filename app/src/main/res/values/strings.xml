@@ -1992,4 +1992,5 @@ Erstellt am %1$s – offline auf dem Gerät.</string>
     <string name="ds_vs_prev">zum Vormonat</string>
     <string name="ds_hide">Betrag verbergen</string>
     <string name="ds_show">Betrag anzeigen</string>
+    <string name="ds_backup_hero">Sichere deine Daten lokal auf deinem Gerät.</string>
 </resources>

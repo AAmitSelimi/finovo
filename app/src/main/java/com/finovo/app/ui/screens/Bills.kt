@@ -365,8 +365,7 @@ private fun BillListRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(appColors().card)
+            .premiumSurface(RoundedCornerShape(16.dp))
             .clickable(onClick = onOpen)
             .padding(horizontal = 14.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically

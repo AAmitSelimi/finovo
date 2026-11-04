@@ -1991,4 +1991,5 @@
     <string name="ds_vs_prev">geçen aya göre</string>
     <string name="ds_hide">Tutarı gizle</string>
     <string name="ds_show">Tutarı göster</string>
+    <string name="ds_backup_hero">Verilerini cihazında yerel olarak güvende tut.</string>
 </resources>

@@ -1992,4 +1992,5 @@ Krijuar më %1$s – offline në pajisje.</string>
     <string name="ds_vs_prev">krahasuar me muajin e kaluar</string>
     <string name="ds_hide">Fshih shumën</string>
     <string name="ds_show">Shfaq shumën</string>
+    <string name="ds_backup_hero">Ruaji të dhënat e tua lokalisht në pajisjen tënde.</string>
 </resources>
