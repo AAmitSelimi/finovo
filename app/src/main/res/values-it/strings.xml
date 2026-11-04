@@ -1993,4 +1993,9 @@ Creato il %1$s – offline sul dispositivo.</string>
     <string name="ds_hide">Nascondi importo</string>
     <string name="ds_show">Mostra importo</string>
     <string name="ds_backup_hero">Proteggi i tuoi dati localmente sul tuo dispositivo.</string>
+    <string name="sp_feat_1">Entrate e uscite</string>
+    <string name="sp_feat_2">Fatture e abbonamenti</string>
+    <string name="sp_feat_3">Obiettivi di risparmio e budget</string>
+    <string name="sp_feat_4">Analisi e report</string>
+    <string name="sp_feat_5">Offline e privacy</string>
 </resources>

@@ -1136,15 +1136,19 @@ fun BottomSheetContainer(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = state,
-        shape = RoundedCornerShape(topStart = 26.dp, topEnd = 26.dp),
-        containerColor = MaterialTheme.colorScheme.background,
+        shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
+        containerColor = if (appColors().isDark) androidx.compose.ui.graphics.Color(0xFF081231) else MaterialTheme.colorScheme.background,
         dragHandle = {
             Box(
                 modifier = Modifier
                     .padding(vertical = 10.dp)
-                    .size(width = 40.dp, height = 4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(appColors().divider)
+                    .size(width = 44.dp, height = 5.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(
+                        androidx.compose.ui.graphics.Brush.horizontalGradient(
+                            listOf(appColors().glow, appColors().cyan)
+                        )
+                    )
             )
         }
     ) {

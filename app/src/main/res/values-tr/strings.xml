@@ -1992,4 +1992,9 @@
     <string name="ds_hide">Tutarı gizle</string>
     <string name="ds_show">Tutarı göster</string>
     <string name="ds_backup_hero">Verilerini cihazında yerel olarak güvende tut.</string>
+    <string name="sp_feat_1">Gelirler ve giderler</string>
+    <string name="sp_feat_2">Faturalar ve abonelikler</string>
+    <string name="sp_feat_3">Tasarruf hedefleri ve bütçeler</string>
+    <string name="sp_feat_4">Analizler ve raporlar</string>
+    <string name="sp_feat_5">Çevrimdışı ve gizlilik</string>
 </resources>

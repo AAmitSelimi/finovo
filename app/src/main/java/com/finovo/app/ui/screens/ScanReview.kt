@@ -1,5 +1,6 @@
 package com.finovo.app.ui.screens
 
+import com.finovo.app.ui.components.scanCorners
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -580,6 +581,7 @@ private fun InvoiceImage(
                     .fillMaxWidth()
                     .heightIn(max = 260.dp)
                     .background(Color(0xFF101418))
+                    .scanCorners()
             ) {
                 val boxWidthPx = with(LocalDensity.current) { maxWidth.toPx() }
                 val boxHeightPx = with(LocalDensity.current) { maxHeight.toPx() }

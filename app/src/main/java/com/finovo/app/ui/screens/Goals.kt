@@ -263,15 +263,8 @@ private fun GoalCard(
     AppCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
         Column(Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier = Modifier
-                        .size(44.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(appColors().cardAlt),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(goal.emoji, fontSize = 22.sp)
-                }
+                // Grosse, leuchtende Ziel-Kachel im Premium-Design
+                com.finovo.app.ui.components.CategoryBadge(emoji = goal.emoji, size = 56.dp)
                 Spacer(Modifier.width(12.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

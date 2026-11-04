@@ -96,6 +96,7 @@ import androidx.compose.ui.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.foundation.text.KeyboardOptions
 import com.finovo.app.ui.components.*
 import com.finovo.app.util.*
@@ -163,6 +164,30 @@ fun Modifier.premiumSurface(shape: androidx.compose.ui.graphics.Shape = RoundedC
             ) else Brush.linearGradient(listOf(c.cardBorder, c.cardBorder)),
             shape
         )
+}
+
+/** Leuchtende Scan-Ecken (Premium-Scanner) ueber einem Bild. Reine Zeichnung. */
+@Composable
+fun Modifier.scanCorners(): Modifier {
+    val glow = appColors().glow
+    val cyan = appColors().cyan
+    return this.drawWithContent {
+        drawContent()
+        val len = minOf(size.width, size.height) * 0.14f
+        val inset = 10.dp.toPx()
+        val w = 4.dp.toPx()
+        val brush = Brush.linearGradient(listOf(glow, cyan))
+        fun corner(x: Float, y: Float, dx: Float, dy: Float) {
+            drawLine(glow.copy(alpha = 0.35f), androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Offset(x + dx * len, y), strokeWidth = w * 2.5f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(glow.copy(alpha = 0.35f), androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Offset(x, y + dy * len), strokeWidth = w * 2.5f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(brush, androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Offset(x + dx * len, y), strokeWidth = w, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            drawLine(brush, androidx.compose.ui.geometry.Offset(x, y), androidx.compose.ui.geometry.Offset(x, y + dy * len), strokeWidth = w, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+        }
+        corner(inset, inset, 1f, 1f)
+        corner(size.width - inset, inset, -1f, 1f)
+        corner(inset, size.height - inset, 1f, -1f)
+        corner(size.width - inset, size.height - inset, -1f, -1f)
+    }
 }
 
 /** Leuchtender Verlauf fuer Hauptaktionen (elektrisches Blau). */

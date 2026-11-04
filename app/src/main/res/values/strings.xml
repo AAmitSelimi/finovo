@@ -1993,4 +1993,9 @@ Erstellt am %1$s – offline auf dem Gerät.</string>
     <string name="ds_hide">Betrag verbergen</string>
     <string name="ds_show">Betrag anzeigen</string>
     <string name="ds_backup_hero">Sichere deine Daten lokal auf deinem Gerät.</string>
+    <string name="sp_feat_1">Einnahmen &amp; Ausgaben</string>
+    <string name="sp_feat_2">Rechnungen &amp; Abos</string>
+    <string name="sp_feat_3">Sparziele &amp; Budgets</string>
+    <string name="sp_feat_4">Analysen &amp; Berichte</string>
+    <string name="sp_feat_5">Offline &amp; Datenschutz</string>
 </resources>

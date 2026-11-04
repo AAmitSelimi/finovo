@@ -1993,4 +1993,9 @@ Created on %1$s – offline on this device.</string>
     <string name="ds_hide">Hide amount</string>
     <string name="ds_show">Show amount</string>
     <string name="ds_backup_hero">Keep your data safe, locally on your device.</string>
+    <string name="sp_feat_1">Income &amp; expenses</string>
+    <string name="sp_feat_2">Bills &amp; subscriptions</string>
+    <string name="sp_feat_3">Savings goals &amp; budgets</string>
+    <string name="sp_feat_4">Analytics &amp; reports</string>
+    <string name="sp_feat_5">Offline &amp; privacy</string>
 </resources>

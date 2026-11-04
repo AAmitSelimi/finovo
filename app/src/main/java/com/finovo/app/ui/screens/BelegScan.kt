@@ -1,5 +1,6 @@
 package com.finovo.app.ui.screens
 
+import com.finovo.app.ui.components.scanCorners
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -197,6 +198,7 @@ fun BelegScanScreen(viewModel: AppViewModel, onBack: () -> Unit) {
                                 .height(220.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(appColors().cardAlt)
+                                .scanCorners()
                         )
                     }
                 }

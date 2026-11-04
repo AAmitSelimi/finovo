@@ -1993,4 +1993,9 @@ Krijuar më %1$s – offline në pajisje.</string>
     <string name="ds_hide">Fshih shumën</string>
     <string name="ds_show">Shfaq shumën</string>
     <string name="ds_backup_hero">Ruaji të dhënat e tua lokalisht në pajisjen tënde.</string>
+    <string name="sp_feat_1">Të ardhura &amp; shpenzime</string>
+    <string name="sp_feat_2">Fatura &amp; abonime</string>
+    <string name="sp_feat_3">Objektiva kursimi &amp; buxhete</string>
+    <string name="sp_feat_4">Analiza &amp; raporte</string>
+    <string name="sp_feat_5">Offline &amp; privatësi</string>
 </resources>
